@@ -14,13 +14,14 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.MyViewHold
     protected HomeActivity homeContext;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView code, desc, units;
+        public TextView code, desc, units, overview;
 
         public MyViewHolder(View view) {
             super(view);
             code = view.findViewById(R.id.rv_code);
             desc = view.findViewById(R.id.rv_course_desc);
             units = view.findViewById(R.id.rv_units);
+            overview = view.findViewById(R.id.rv_course_overview);
         }
     }
 
@@ -44,6 +45,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.MyViewHold
         holder.code.setText(course.getCode());
         holder.desc.setText(course.getDesc());
         holder.units.setText(course.getUnits());
+        holder.overview.setText(course.getOverview());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

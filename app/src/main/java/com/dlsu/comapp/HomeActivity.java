@@ -364,6 +364,11 @@ public class HomeActivity extends AppCompatActivity
         fragment.viewNote(position);
     }
 
+    public void viewFullReview() {
+        FullReviewFragment fullReview = new FullReviewFragment();
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.main_fragment, fullReview).addToBackStack(null).commit();
+    }
 
 
     public void updateUserSession(){

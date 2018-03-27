@@ -1,5 +1,6 @@
 package com.dlsu.comapp;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -130,6 +131,13 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MyViewHold
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {}
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                homeContext.viewFullReview();
+            }
         });
 
     }
