@@ -1,0 +1,269 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.dlsu.comapp.TutorialFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-condensed"
+            android:text="What's Inside\nCCS ComApp?"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="LOGIN"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="The user is directed to the Login page once the app is opened and if they are currently not logged in. \n\nThe user must connect to the internet and use their DLSU account to login into the application." />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="HOME"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="The home screen consists of four buttons that lead the user to a designated screen with its own set of functionalities. These include: Courses page, Professors page, Forum page, and Help page.  \n\nThere is also a floating action button at the lower-right corner that when pressed will lead to the application tutorial page. " />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="ACCOUNT"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="The user can view their account by swiping or clicking the toolbar found on the top left of the screen and selecting “FAQ”. They can also access this from a button found in the home page. \n\nThe user is shown a list of FAQ of which they can select from in order to view the answer to such. \n\nThe user just has to scroll through the questions and press the expandable view that contains the question they are asking then can read the answer to such. " />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="COURSES"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="The user can view their account by swiping or clicking the toolbar found on the top left of the screen and selecting “Courses”. They can also access this from a button found in the home page. \n\nThe user is shown a list of courses of which they can select from in order to view more information about the course. \n\nThe user can also create, view, or edit notes on the screen by pressing either pressing the “Add Notes” button to create new notes or by selecting a previously created note that can be viewed and edited. " />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="PROFESSORS"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="The user can view their account by swiping or clicking the toolbar found on the top left of the screen and selecting “Professors”. They can also access this from a button found in the home page. \n\nThe user is shown a list of professors of which they can select from in order to view more information about the professor. \n\nThe user can rate the professor by selecting the class they wish to review, giving them a star rating out of five, adding a comment, and by pressing the “Submit” button. " />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="FORUM"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="The user can view their account by swiping or clicking the toolbar found on the top left of the screen and selecting “Forum”. They can also access this from a button found in the home page. \n\nThe user can is shown a list of forum threads of which they can select from in order to view or add to the thread. \n\nThe user can swipe down from the top to refresh the list of threads. \n\nThe user can view a thread by selecting and clicking which one they wish to view and can add to the thread by entering their comment and pressing a submit button found on the bottom of the screen. \n\nThe user can also like a thread or comment by pressing the thumbs up button. \n\nThe user can swipe down from the top to refresh the content (comments/replies) of the thread. " />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="FAQ"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="The user can view their account by swiping or clicking the toolbar found on the top left of the screen and selecting “FAQ”. They can also access this from a button found in the home page. \n\nThe user is shown a list of FAQ of which they can select from in order to view the answer to such. \n\nThe user just has to scroll through the questions and press the expandable view that contains the question they are asking then can read the answer to such. " />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="TUTOTRIAL"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="The user can view the application tutorial by pressing the floating action button on the bottom right corner of the home page." />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="LOGOUT"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="The user can view their account by swiping or clicking the toolbar found on the top left of the screen and selecting “Logout”. \n\nThey are then redirected to the login page.  " />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

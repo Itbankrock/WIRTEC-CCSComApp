@@ -1,0 +1,91 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:elevation="3dp"
+        card_view:cardCornerRadius="0dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/rv_notes_content"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@color/colorPrimaryDark"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="none"
+                android:focusable="false"
+                android:padding="8dp"
+                android:text="Write your notes here."
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/rv_notes_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rv_notes_content"
+                android:layout_marginEnd="8dp"
+                android:layout_toStartOf="@+id/rv_notes_menu"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-condensed"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                android:singleLine="true"
+                android:text="Setters and Getters"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/rv_notes_author"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rv_notes_title"
+                android:layout_marginEnd="8dp"
+                android:layout_toStartOf="@+id/rv_notes_date"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-condensed"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:singleLine="true"
+                android:text="Enrico Zabayle"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/rv_notes_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/rv_notes_author"
+                android:layout_alignBottom="@+id/rv_notes_author"
+                android:layout_alignParentEnd="true"
+                android:paddingEnd="10dp"
+                android:text="2018-03-09"
+                android:textSize="10sp" />
+
+            <ImageView
+                android:id="@+id/rv_notes_menu"
+                android:layout_width="20dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/rv_notes_content"
+                android:layout_marginEnd="8dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_menu" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

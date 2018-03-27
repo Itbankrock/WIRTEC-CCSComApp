@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/rv_review_icon"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/delgallego"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/rv_review_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/rv_review_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="16dp"
+                android:layout_toStartOf="@+id/review_like"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Neil Patrick A. Del Gallego"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/rv_review_like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:tint="@color/colorLightGray"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:srcCompat="@drawable/ic_thumbsup" />
+
+            <RatingBar
+                android:id="@+id/rv_review_rating"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/rv_review_name"
+                android:layout_weight="1"
+                android:numStars="5"
+                android:progressTint="#ffdf00"
+                android:stepSize="0.5" />
+
+            <TextView
+                android:id="@+id/rv_review_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rv_review_name"
+                android:layout_marginStart="4dp"
+                android:layout_toEndOf="@+id/rv_review_rating"
+                android:fontFamily="sans-serif-condensed"
+                android:text="March 14, 2018"
+                android:textAlignment="center"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/rv_review_num_likes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignStart="@+id/rv_review_like"
+                android:layout_below="@+id/rv_review_like"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
+                android:text="10K"
+                android:textSize="10sp"
+                tools:layout_editor_absoluteX="341dp"
+                tools:layout_editor_absoluteY="0dp" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/rv_review_course"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:text="WEBTECH"
+            android:textAlignment="viewStart"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/rv_review_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-condensed"
+            android:text="I haven't been able to Unfollow people on my Friends List for over 2 years now. Even if there's a new update or not, the Unfollow option just doesn't work! I thought it was my phone that was the problem, so I logged into my account via my girlfriend's tablet and still, the same thing....the Unfollow option doesn't work whenever I select it. I've sent Facebook more than a few messages about it over the past two years, but you have never fixed it. I'm sick of it."
+            android:textAlignment="viewStart"
+            android:textColor="@android:color/black" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

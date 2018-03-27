@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/rv_help_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/cardview_light_background"
+        android:padding="16dp"
+        android:text="Possibly the January 2018 Meme of the Month, Do you know da wae; has taken the world by storm. Many brave, Ugandan Warriors formed by a group of Knuckles, which is a Sonic character, follow around people on VRChat, asking if they know the way. They find queens to follow, and if they find a false queen, they make spit sounds. If they find a real queen, they click their tongues to show that they are the queen's followers. This random craze is funny because of how random it is, and many people do not seem to laugh at this, usually people who are not true meme artists."
+        android:textAlignment="viewStart"
+        android:textColor="@android:color/black" />
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,48 @@
+package com.dlsu.comapp;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.widget.EditText;
+
+public class NewReplyThread extends AppCompatActivity {
+    private EditText newReply;
+    private ForumThread thethread;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_new_reply_thread);
+        setTitle("Reply");
+
+        Intent i = getIntent();
+        thethread = i.getParcelableExtra("thethread");
+
+        newReply = (EditText)findViewById(R.id.newReply_content);
+
+        Toolbar actionBarToolBar = (Toolbar) findViewById(R.id.newReply_toolbar);
+        actionBarToolBar.inflateMenu(R.menu.newthread_items);
+        actionBarToolBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                boolean toReturn = false;
+                int id = item.getItemId();
+
+                //noinspection SimplifiableIfStatement
+                if (id == R.id.newThread_action_submit) {
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("newreplycontent",newReply.getText().toString());
+                    returnIntent.putExtra("threadrepid",thethread.getId());
+                    returnIntent.putExtra("threaditself",thethread);
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
+                    toReturn = true;
+                }
+                return toReturn;
+            }
+        });
+    }
+}

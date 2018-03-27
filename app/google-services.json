@@ -1,0 +1,87 @@
+{
+  "project_info": {
+    "project_number": "1076400474715",
+    "firebase_url": "https://dlsu-wirtec-archerseye.firebaseio.com",
+    "project_id": "dlsu-wirtec-archerseye",
+    "storage_bucket": "dlsu-wirtec-archerseye.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1076400474715:android:7e49bbfb252d905c",
+        "android_client_info": {
+          "package_name": "com.dlsu.comapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1076400474715-nsuhcch91qifutfut0ktg8631r6oib8b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dlsu.comapp",
+            "certificate_hash": "ddd4ee8fe677e98283c5b7f99b6ce38a8c7c6f48"
+          }
+        },
+        {
+          "client_id": "1076400474715-88c8332i54l64dogphu3ao700b9tsr9u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dlsu.comapp",
+            "certificate_hash": "a1439c95ccf95027d3a8ed26fbe3050db3628944"
+          }
+        },
+        {
+          "client_id": "1076400474715-tioadcarl7kg579po1ibonuqg425asgu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dlsu.comapp",
+            "certificate_hash": "29528f712a4d7c076b5550eb50f85bb5d2a5ac36"
+          }
+        },
+        {
+          "client_id": "1076400474715-ugfg03u6ld1dk0elgcj64kb64dkjdc3n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dlsu.comapp",
+            "certificate_hash": "7d8e8302827aeaba4bcde83b2cb47416bca4a4de"
+          }
+        },
+        {
+          "client_id": "1076400474715-ln073bsc0krmsee2tmqdjfbv79m2fcdq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dlsu.comapp",
+            "certificate_hash": "cc54b57266f21bd69af3f37a99f801d1a1122cdd"
+          }
+        },
+        {
+          "client_id": "1076400474715-j0pq5ghtobd1ui81omngdn3gbtivqlvr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3sQGLkfvd25usFc6wlo5kyirEk8xNZpU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1076400474715-j0pq5ghtobd1ui81omngdn3gbtivqlvr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
