@@ -2,6 +2,7 @@ package com.dlsu.comapp;
 
 
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +44,11 @@ public class AdminAssociateCourseProfFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_admin_associate_course_prof, container, false);
+
+        getActivity().setTitle("Course-Prof Association");
+        ((HomeActivity)getActivity()).setNavItem(5);
+        final NavigationView navigationView = ((HomeActivity)getActivity()).getNavigationView();
+        navigationView.getMenu().getItem(5).setChecked(true);
 
         spinProf = view.findViewById(R.id.admin_assoc_profspinner);
         spinCourse = view.findViewById(R.id.admin_assoc_coursespinner);

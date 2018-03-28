@@ -25,20 +25,35 @@
         <item
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_help"
-            android:title="FAQ" />
-
-        <item
-            android:id="@+id/nav_admin_associate"
-            android:icon="@drawable/ic_profs"
-            android:title="Associate ProfCourses" />
+            android:title="DLSU FAQ" />
     </group>
 
-    <group android:id="@+id/group2"
+    <group android:id="@+id/admin_group2"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_admin_associate"
+            android:icon="@drawable/ic_connect"
+            android:title="Associate Course-Prof" />
+        <item
+            android:id="@+id/nav_admin_add_course"
+            android:icon="@drawable/ic_library_add"
+            android:title="Add Course" />
+        <item
+            android:id="@+id/nav_admin_add_prof"
+            android:icon="@drawable/ic_person_add"
+            android:title="Add Professor" />
+    </group>
+
+    <group android:id="@+id/group3"
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_account"
             android:icon="@drawable/ic_account"
             android:title="Account" />
+        <item
+            android:id="@+id/nav_feedback"
+            android:icon="@drawable/ic_feedback"
+            android:title="Feedback" />
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_logout"
