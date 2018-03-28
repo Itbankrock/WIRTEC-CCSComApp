@@ -3,8 +3,6 @@ package com.dlsu.comapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -13,7 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,13 +25,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +46,7 @@ public class HomeActivity extends AppCompatActivity
     private ImageView navpic;
     private User theuser;
     private Toolbar toolbar;
+    private threadFragment thread;
 
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
@@ -58,6 +54,8 @@ public class HomeActivity extends AppCompatActivity
     DatabaseReference dbUsers;
     private final static int NEW_THREAD_CODE = 69;
     private final static int NEW_REPLY_CODE = 70;
+    private final static int EDIT_REPLY_CODE = 71;
+    private final static int EDIT_COMMENT_CODE = 80;
 
 
     @Override
@@ -349,7 +347,7 @@ public class HomeActivity extends AppCompatActivity
         Bundle bundle = new Bundle();
         bundle.putParcelable("theuser", theuser);
         bundle.putParcelable("targetObject",object);
-        threadFragment thread = new threadFragment();
+        thread = new threadFragment();
         thread.setArguments(bundle);
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.main_fragment, thread).addToBackStack(null).commit();
@@ -364,8 +362,12 @@ public class HomeActivity extends AppCompatActivity
         fragment.viewNote(position);
     }
 
-    public void viewFullReview() {
+    public void viewFullReview(String reviewID, String reviewMakerID) {
+        Bundle bundle = new Bundle();
+        bundle.putString("reviewID", reviewID);
+        bundle.putString("makerID",reviewMakerID);
         FullReviewFragment fullReview = new FullReviewFragment();
+        fullReview.setArguments(bundle);
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.main_fragment, fullReview).addToBackStack(null).commit();
     }
@@ -408,7 +410,7 @@ public class HomeActivity extends AppCompatActivity
                 dbtest.child(idthread).setValue(newThread);
 
                 String idfirstpost = dbtest.child(idthread).child("replies").push().getKey();
-                ThreadPost post = new ThreadPost(idfirstpost,theuser.getGoogleuid(),idthread,newcontent,timestamp,true);
+                ThreadPost post = new ThreadPost(idfirstpost,theuser.getGoogleuid(),idthread,newcontent,timestamp,timestamp,true);
 
                 dbtest.child(idthread).child("replies").child(idfirstpost).setValue(true);
                 dbtest2.child(idfirstpost).setValue(post, new DatabaseReference.CompletionListener() {
@@ -439,16 +441,62 @@ public class HomeActivity extends AppCompatActivity
 
                 final String idreply = dbtest2.push().getKey();
                 dbtest.child(idreply).setValue(true);
-                ThreadPost post = new ThreadPost(idreply,theuser.getGoogleuid(),threadid,newreply,timestamp,true);
+                ThreadPost post = new ThreadPost(idreply,theuser.getGoogleuid(),threadid,newreply,timestamp, timestamp, true);
                 dbtest2.child(idreply).setValue(post);
 				
-				//if(!fbCurrUser.getUid().equals(thethread.getUserID())){
+				if(!fbCurrUser.getUid().equals(thethread.getUserID())){
                 String notifKey = dbtest3.child("notifications").push().getKey();
                 Map<String, Object> childUpdates = new HashMap<>();
                 childUpdates.put("from", fbCurrUser.getUid());
-                childUpdates.put("message", "Replied to your thread " + thethread.getTitle() + " saying " + newreply);
+                childUpdates.put("message", fbCurrUser.getDisplayName().split(" ")[0] + " replied to your thread " + thethread.getTitle());
+                childUpdates.put("messagelong", newreply);
                 dbtest3.child("notifications").child(notifKey).setValue(childUpdates);
-                //}
+                }
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+
+        else if(requestCode == EDIT_REPLY_CODE){
+            if(resultCode == Activity.RESULT_OK){
+                String newreply = data.getStringExtra("newreplycontent");
+                String replyID = data.getStringExtra("replyID");
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy h:mm a");
+                String timestamp = dateFormat.format(new Date());
+
+                DatabaseReference dbtest2 = FirebaseDatabase.getInstance().getReference("thread_replies/" + replyID);
+
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put("/content/", newreply);
+                childUpdates.put("/lastupdated/", timestamp);
+                dbtest2.updateChildren(childUpdates);
+                thread.preparePosts();
+
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+
+        else if(requestCode == EDIT_COMMENT_CODE){
+            if(resultCode == Activity.RESULT_OK){
+                String newcomment = data.getStringExtra("newcommentcontent");
+                String reviewID = data.getStringExtra("reviewID");
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy h:mm a");
+                String timestamp = dateFormat.format(new Date());
+
+                DatabaseReference dbtest2 = FirebaseDatabase.getInstance().getReference("review_comments/" + reviewID);
+
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put("/content/", newcomment);
+                childUpdates.put("/lastupdated/", timestamp);
+
+                dbtest2.updateChildren(childUpdates);
+                thread.preparePosts();
+
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result

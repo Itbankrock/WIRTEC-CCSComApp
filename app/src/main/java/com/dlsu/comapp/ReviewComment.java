@@ -7,18 +7,20 @@ package com.dlsu.comapp;
 public class ReviewComment {
     private String id;
     private String userID;
-    private String postID;
+    private String targetreviewID;
     private String content;
     private String timestamp;
+    private String lastupdated;
     private boolean isActive;
 
-    public ReviewComment(String id, String userID, String postID, String content, String timestamp, boolean isActive) {
+    public ReviewComment(String id, String userID, String reviewID, String content, String timestamp, String lastupdated, boolean isActive) {
         this.id = id;
         this.userID = userID;
-        this.postID = postID;
+        this.targetreviewID = reviewID;
         this.content = content;
         this.timestamp = timestamp;
         this.isActive = isActive;
+        this.lastupdated = lastupdated;
     }
 
     public ReviewComment(){}
@@ -39,12 +41,12 @@ public class ReviewComment {
         this.userID = userID;
     }
 
-    public String getPostID() {
-        return postID;
+    public String getTargetreviewID() {
+        return targetreviewID;
     }
 
-    public void setPostID(String postID) {
-        this.postID = postID;
+    public void setTargetreviewID(String targetreviewID) {
+        this.targetreviewID = targetreviewID;
     }
 
     public String getContent() {
@@ -69,5 +71,13 @@ public class ReviewComment {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public String getLastupdated() {
+        return lastupdated;
+    }
+
+    public void setLastupdated(String lastupdated) {
+        this.lastupdated = lastupdated;
     }
 }

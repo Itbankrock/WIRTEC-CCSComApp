@@ -74,6 +74,7 @@ public class threadFragment extends Fragment implements SwipeRefreshLayout.OnRef
             public void onClick(View view) {
                 Intent i = new Intent(  ((HomeActivity)getActivity()) ,  NewReplyThread.class  );
                 i.putExtra("thethread",thethread);
+                i.putExtra("leaction","newreply");
                 ((HomeActivity)getActivity()).startActivityForResult(i,NEW_REPLY_CODE);
             }
         });
@@ -115,7 +116,9 @@ public class threadFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     dbPostFinder.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            pAdapter.addPost(dataSnapshot.child(snapshot.getKey()).getValue(ThreadPost.class));
+                            if(dataSnapshot.child(snapshot.getKey()).child("active").getValue(Boolean.class) == true){
+                                pAdapter.addPost(dataSnapshot.child(snapshot.getKey()).getValue(ThreadPost.class));
+                            }
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {

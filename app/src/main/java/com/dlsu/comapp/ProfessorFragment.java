@@ -207,7 +207,10 @@ public class ProfessorFragment extends Fragment {
         readAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("thetargetprof", prof);
                 ReviewsFragment reviews = new ReviewsFragment();
+                reviews.setArguments(bundle);
                 fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.main_fragment, reviews).addToBackStack(null).commit();
             }

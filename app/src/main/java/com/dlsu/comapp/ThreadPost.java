@@ -10,15 +10,17 @@ public class ThreadPost {
     private String postID;
     private String content;
     private String timestamp;
+    private String lastupdated;
     private boolean isActive;
 
-    public ThreadPost(String id, String userID, String postID, String content, String timestamp, boolean isActive) {
+    public ThreadPost(String id, String userID, String postID, String content, String timestamp, String lastupdated, boolean isActive) {
         this.id = id;
         this.userID = userID;
         this.postID = postID;
         this.content = content;
         this.timestamp = timestamp;
         this.isActive = isActive;
+        this.lastupdated = lastupdated;
     }
 
     public ThreadPost(){}
@@ -69,5 +71,13 @@ public class ThreadPost {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public String getLastupdated() {
+        return lastupdated;
+    }
+
+    public void setLastupdated(String lastupdated) {
+        this.lastupdated = lastupdated;
     }
 }

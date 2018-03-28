@@ -15,6 +15,49 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <TextView
+                android:id="@+id/rv_threadpost_lastedited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Last edited on 1/1/1970 12:00 AM"
+                android:textSize="10sp"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toBottomOf="@+id/rv_threadpost_maincontent" />
+
+            <LinearLayout
+                android:id="@+id/rv_threadpost_editorslayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintTop_toTopOf="parent">
+
+                <ImageButton
+                    android:id="@+id/rv_threadpost_editbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:tint="@color/colorPrimaryDark"
+                    app:srcCompat="@drawable/ic_edit" />
+
+                <ImageButton
+                    android:id="@+id/rv_threadpost_deletebutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:tint="@color/colorPrimaryDark"
+                    app:srcCompat="@drawable/ic_delete" />
+
+            </LinearLayout>
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/rv_threadpost_userpic"
                 android:layout_width="46dp"
@@ -32,6 +75,7 @@
                 android:layout_height="20dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:text="Username"
                 android:textColor="@android:color/background_dark"
                 android:textSize="13sp"
                 android:textStyle="bold"
@@ -43,6 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:text="Date Time"
                 android:textSize="10sp"
                 app:layout_constraintStart_toEndOf="@+id/rv_threadpost_userpic"
                 app:layout_constraintTop_toBottomOf="@+id/rv_threadpost_userfullname" />
@@ -54,6 +99,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:text="Post content."
                 android:textAlignment="viewStart"
                 android:textColor="@android:color/background_dark"
                 android:textSize="14sp"
@@ -66,12 +112,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:orientation="horizontal"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toBottomOf="@+id/rv_threadpost_maincontent">
+                card_view:layout_constraintTop_toBottomOf="@+id/rv_threadpost_lastedited">
 
                 <ImageButton
                     android:id="@+id/rv_threadpost_replybutton"

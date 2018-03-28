@@ -1,5 +1,6 @@
 package com.dlsu.comapp;
 
+import android.content.Context;
 import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -37,6 +38,7 @@ public class ForumThreadListAdapter extends RecyclerView.Adapter<ForumThreadList
     private SimpleDateFormat dateFormat;
     private NumberShortener ns = new NumberShortener();
     private ForumThreadListFragment mContext;
+    private Context mainContext;
     private DatabaseReference dbTest;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -69,6 +71,8 @@ public class ForumThreadListAdapter extends RecyclerView.Adapter<ForumThreadList
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.forumthread_item_layout, parent, false);
 
+        this.mainContext = parent.getContext();
+
         return new MyViewHolder(itemView);
     }
 
@@ -88,9 +92,8 @@ public class ForumThreadListAdapter extends RecyclerView.Adapter<ForumThreadList
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                if(mContext.getActivity().getApplicationContext() != null){
-                    Picasso.with(mContext.getActivity().getApplicationContext()).load( dataSnapshot.child("photourl").getValue().toString() ).into(holder.userpic);
-                }
+
+                Picasso.with(mainContext).load( dataSnapshot.child("photourl").getValue().toString() ).into(holder.userpic);
 
             }
             @Override

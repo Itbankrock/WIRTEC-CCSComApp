@@ -24,7 +24,7 @@ public class NewThreadForm extends AppCompatActivity {
         newThreadTitle = (EditText) findViewById(R.id.newThread_Title);
         newThreadContent = (EditText) findViewById(R.id.newThread_content);
 
-        setTitle("New thread");
+        setTitle("New Thread");
 
         Toolbar actionBarToolBar = (Toolbar) findViewById(R.id.newThread_toolbar);
         actionBarToolBar.inflateMenu(R.menu.newthread_items);

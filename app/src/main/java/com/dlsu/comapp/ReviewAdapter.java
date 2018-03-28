@@ -73,7 +73,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        Review review = reviewList.get(position);
+        final Review review = reviewList.get(position);
 
         dbUsers.child(review.getUserID()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -136,7 +136,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MyViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                homeContext.viewFullReview();
+                homeContext.viewFullReview(review.getReviewID(),review.getUserID());
             }
         });
 

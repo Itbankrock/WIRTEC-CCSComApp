@@ -4,6 +4,7 @@ package com.dlsu.comapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -56,7 +57,11 @@ public class ForumThreadListFragment extends Fragment implements SwipeRefreshLay
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_forumthreadlist);
         recyclerView.setVisibility(View.INVISIBLE);
         fabNew = (FloatingActionButton) view.findViewById(R.id.fab_newThread);
+
         getActivity().setTitle("Forums");
+        ((HomeActivity)getActivity()).setNavItem(3);
+        final NavigationView navigationView = ((HomeActivity)getActivity()).getNavigationView();
+        navigationView.getMenu().getItem(3).setChecked(true);
 
         // SwipeRefreshLayout
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.rv_forumthreadlist_swiper);
@@ -111,12 +116,12 @@ public class ForumThreadListFragment extends Fragment implements SwipeRefreshLay
                 forumList.clear();
                 mSwipeRefreshLayout.setRefreshing(true);
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
-                    //mAdapter.addItem(snapshot.getValue(ForumThread.class));
                     forumList.add(snapshot.getValue(ForumThread.class));
                 }
                 mSwipeRefreshLayout.setRefreshing(false);
                 mAdapter.notifyDataSetChanged();
                 recyclerView.setVisibility(View.VISIBLE);
+
             }
 
             @Override

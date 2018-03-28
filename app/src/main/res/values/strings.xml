@@ -1,5 +1,6 @@
 <resources>
     <string name="default_notification_channel_id">"CCSCOMAPP_CH_01"</string>
+    <string name="default_notification_channel_name">"CCS ComApp"</string>
     <string name="app_name">"CCS ComApp"</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

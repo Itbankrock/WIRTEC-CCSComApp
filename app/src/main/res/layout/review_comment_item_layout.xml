@@ -2,6 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -14,6 +15,37 @@
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/rv_comment_editorslayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintTop_toTopOf="parent">
+
+                <ImageButton
+                    android:id="@+id/rv_comment_editbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:tint="@color/colorPrimaryDark"
+                    app:srcCompat="@drawable/ic_edit" />
+
+                <ImageButton
+                    android:id="@+id/rv_comment_deletebutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:tint="@color/colorPrimaryDark"
+                    app:srcCompat="@drawable/ic_delete" />
+
+            </LinearLayout>
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/rv_comment_userpic"
@@ -32,6 +64,7 @@
                 android:layout_height="20dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:text="Username"
                 android:textColor="@android:color/background_dark"
                 android:textSize="13sp"
                 android:textStyle="bold"
@@ -43,25 +76,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:text="Date posted"
                 android:textSize="10sp"
                 app:layout_constraintStart_toEndOf="@+id/rv_comment_userpic"
                 app:layout_constraintTop_toBottomOf="@+id/rv_comment_userfullname" />
 
             <TextView
                 android:id="@+id/rv_comment_maincontent"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="375dp"
+                android:layout_height="23dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:text="Content"
                 android:textAlignment="viewStart"
                 android:textColor="@android:color/background_dark"
                 android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rv_comment_userpic"
-                card_view:layout_constraintBottom_toBottomOf="parent" />
+                card_view:layout_constraintBottom_toTopOf="@+id/rv_comment_lastupdated"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toBottomOf="@+id/rv_comment_userpic" />
+
+            <TextView
+                android:id="@+id/rv_comment_lastupdated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:text="Last updated on 1/1/1970 12:00 AM"
+                android:textSize="10sp"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintStart_toStartOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
