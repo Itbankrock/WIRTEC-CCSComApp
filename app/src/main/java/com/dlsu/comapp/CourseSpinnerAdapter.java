@@ -49,7 +49,7 @@ public class CourseSpinnerAdapter extends ArrayAdapter<Course> {
         // get view
         TextView tvText1 = (TextView) convertView.findViewById(android.R.id.text1);
         // set content
-        tvText1.setText(courselist.get(position).getCode());
+        tvText1.setText(courselist.get(position).getId());
         tvText1.setTextColor(Color.BLACK);
         // return
         return convertView;
@@ -62,7 +62,7 @@ public class CourseSpinnerAdapter extends ArrayAdapter<Course> {
                                 ViewGroup parent) {
         convertView = inflater.inflate(R.layout.spinner_textview, null);
         TextView names = (TextView) convertView.findViewById(R.id.spinner_assoc_textview);
-        names.setText(courselist.get(position).getCode());
+        names.setText(courselist.get(position).getId());
         if(position == 0){
             names.setTextColor(Color.GRAY);
         }

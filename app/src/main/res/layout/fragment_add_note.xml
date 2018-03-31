@@ -2,8 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.enricozabayle.archerseye.NoteFragment">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,32 +40,36 @@
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/cancel_note"
+        android:id="@+id/add_notes_cancel_fab"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:clickable="true"
         android:src="@drawable/ic_cancel"
-        android:tint="@android:color/holo_red_dark"
-        app:backgroundTint="@color/cardview_light_background"
+        android:tint="@color/cardview_light_background"
+        android:visibility="invisible"
+        app:backgroundTint="@color/colorPrimary"
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/add_notes_save_fab"
+        app:rippleColor="@color/cardview_light_background" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/save_note"
+        android:id="@+id/add_notes_save_fab"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:clickable="true"
         android:src="@drawable/ic_check"
-        android:tint="?attr/colorPrimary"
-        app:backgroundTint="@color/cardview_light_background"
+        android:tint="@color/cardview_light_background"
+        android:visibility="invisible"
+        app:backgroundTint="@color/colorPrimary"
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/cancel_note" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:rippleColor="@color/cardview_light_background" />
 
 </android.support.constraint.ConstraintLayout>
 

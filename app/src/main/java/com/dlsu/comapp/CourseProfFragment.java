@@ -1,17 +1,24 @@
 package com.dlsu.comapp;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,6 +48,7 @@ public class CourseProfFragment extends Fragment {
     private FragmentManager fragmentManager;
     private DatabaseReference dbTest;
     private LinearLayout progresselements;
+    private SearchView searchView;
 
     public CourseProfFragment() {
         // Required empty public constructor
@@ -61,6 +69,21 @@ public class CourseProfFragment extends Fragment {
 
         //prepareCourseData();
 
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) view.findViewById(R.id.courseprof_search);
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getActivity().getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+        EditText searchEditText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchEditText.setTextColor(getResources().getColor(R.color.colorWhite));
+        searchEditText.setHintTextColor(getResources().getColor(R.color.colorWhite));
+        ImageView searchIcon = searchView.findViewById(android.support.v7.appcompat.R.id.search_button);
+        ImageView searchIcon2 = searchView.findViewById(android.support.v7.appcompat.R.id.search_mag_icon);
+        searchIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorWhite), android.graphics.PorterDuff.Mode.SRC_IN);
+        searchIcon2.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorWhite), android.graphics.PorterDuff.Mode.SRC_IN);
+
         if (navItem == 1) {
             getActivity().setTitle("Courses");
             ((HomeActivity)getActivity()).setNavItem(1);
@@ -72,7 +95,7 @@ public class CourseProfFragment extends Fragment {
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(cAdapter);
 
-            cAdapter.notifyDataSetChanged();
+            prepareCourseData();
         }
         else if (navItem == 2) {
             getActivity().setTitle("Professors");
@@ -103,15 +126,38 @@ public class CourseProfFragment extends Fragment {
     }
 
     public void prepareCourseData() {
-
+        progresselements.setVisibility(View.VISIBLE);
         dbTest = FirebaseDatabase.getInstance().getReference("courses");
         dbTest.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean checker = false;
                 for(DataSnapshot object: dataSnapshot.getChildren()){
                     Course thiscourse= object.getValue(Course.class);
                     courselist.add( thiscourse );
+                    checker = true;
                 }
+                if(checker){
+                    cAdapter.notifyDataSetChanged();
+                    progresselements.setVisibility(View.GONE);
+                    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                        @Override
+                        public boolean onQueryTextSubmit(String query) {
+                            // filter recycler view when query submitted
+                            cAdapter.getFilter().filter(query);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onQueryTextChange(String query) {
+                            // filter recycler view when text is changed
+                            cAdapter.getFilter().filter(query);
+                            return false;
+                        }
+                    });
+                }
+
+
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {}
@@ -120,7 +166,7 @@ public class CourseProfFragment extends Fragment {
 
         Collections.sort(courselist, new Comparator<Course>() {
             public int compare(Course a, Course b) {
-                return a.getCode().compareTo(b.getCode());
+                return a.getId().compareTo(b.getId());
             }
         });
     }
@@ -131,12 +177,33 @@ public class CourseProfFragment extends Fragment {
         dbTest.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean checker = false;
                 for(DataSnapshot object: dataSnapshot.getChildren()){
                     Professor thisprof= object.getValue(Professor.class);
                     proflist.add( thisprof );
+                    checker = true;
                 }
-                pAdapter.notifyDataSetChanged();
-                progresselements.setVisibility(View.GONE);
+                if(checker){
+                    pAdapter.notifyDataSetChanged();
+                    progresselements.setVisibility(View.GONE);
+                    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                        @Override
+                        public boolean onQueryTextSubmit(String query) {
+                            // filter recycler view when query submitted
+                            pAdapter.getFilter().filter(query);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onQueryTextChange(String query) {
+                            // filter recycler view when text is changed
+                            pAdapter.getFilter().filter(query);
+                            return false;
+                        }
+                    });
+                }
+
+
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {}
@@ -174,6 +241,7 @@ public class CourseProfFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putParcelable("course", courselist.get(position));
         bundle.putParcelableArrayList("profs", getProfs(position));
+
         CourseFragment course = new CourseFragment();
         course.setArguments(bundle);
         fragmentManager = getActivity().getSupportFragmentManager();

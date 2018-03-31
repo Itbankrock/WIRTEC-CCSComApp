@@ -10,11 +10,19 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import org.w3c.dom.Text;
 
 public class NewThreadForm extends AppCompatActivity {
 
     private EditText newThreadTitle,newThreadContent;
+    private long threadnumber;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

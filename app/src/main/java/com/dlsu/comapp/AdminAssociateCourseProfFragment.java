@@ -101,15 +101,25 @@ public class AdminAssociateCourseProfFragment extends Fragment {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String idcourse = courseAdapter.getItem( spinCourse.getSelectedItemPosition() ).getId();
-                String idprof = profAdapter.getItem( spinProf.getSelectedItemPosition() ).getId();
-                dbTest = FirebaseDatabase.getInstance().getReference("courses/" + idcourse);
-                dbTest.child("professors").child(idprof).setValue(true);
+                final String idcourse = courseAdapter.getItem( spinCourse.getSelectedItemPosition() ).getId();
+                final String idprof = profAdapter.getItem( spinProf.getSelectedItemPosition() ).getId();
+                dbTest = FirebaseDatabase.getInstance().getReference("courses/" + idcourse + "/professors");
+                dbTest.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(!dataSnapshot.hasChild(idprof)){
+                            dbTest.child(idprof).setValue(true);
+                            dbTest = FirebaseDatabase.getInstance().getReference("professors/" + idprof);
+                            dbTest.child("courses").child(idcourse).setValue(true);
+                            Toast.makeText(getActivity(), "Course Prof Associated!", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Toast.makeText(getActivity(),"Course-Prof has already been associated!",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override public void onCancelled(DatabaseError databaseError) {}});
 
-                dbTest = FirebaseDatabase.getInstance().getReference("professors/" + idprof);
-                dbTest.child("courses").child(idcourse).setValue(true);
 
-                Toast.makeText(getActivity(), "Course Prof Associated!", Toast.LENGTH_SHORT).show();
             }
         });
 

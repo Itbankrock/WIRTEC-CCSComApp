@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ActivityLogAdapter extends RecyclerView.Adapter<ActivityLogAdapter.MyViewHolder>{
 
-    protected List<ActivityLog> activityList;
+    protected List<String> activityList;
     protected HomeActivity homeContext;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -27,7 +27,7 @@ public class ActivityLogAdapter extends RecyclerView.Adapter<ActivityLogAdapter.
     }
 
 
-    public ActivityLogAdapter(List<ActivityLog> activityList, HomeActivity homeContext) {
+    public ActivityLogAdapter(List<String> activityList, HomeActivity homeContext) {
         this.activityList = activityList;
         this.homeContext = homeContext;
     }
@@ -42,8 +42,8 @@ public class ActivityLogAdapter extends RecyclerView.Adapter<ActivityLogAdapter.
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        ActivityLog al = activityList.get(position);
-        holder.activityLog.setText(al.getActivity());
+        String al = activityList.get(position);
+        holder.activityLog.setText(al);
     }
 
     @Override

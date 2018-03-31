@@ -16,8 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -39,9 +42,10 @@ public class AccountFragment extends Fragment {
     private ImageView accteditbutton;
     private Button savebutton;
     DatabaseReference dbUsers;
+    private ActivityLogAdapter adapter;
 
 
-    private ArrayList<ActivityLog> activityList = new ArrayList<>();
+    private ArrayList<String> activityList = new ArrayList<>();
 
     public AccountFragment () {
     }
@@ -50,9 +54,9 @@ public class AccountFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         getActivity().setTitle("Account");
-        ((HomeActivity)getActivity()).setNavItem(5);
+        ((HomeActivity)getActivity()).setNavItem(8);
         final NavigationView navigationView = ((HomeActivity)getActivity()).getNavigationView();
-        navigationView.getMenu().getItem(5).setChecked(true);
+        navigationView.getMenu().getItem(8).setChecked(true);
 
         View view =  inflater.inflate(R.layout.fragment_account, container, false);
 
@@ -134,8 +138,10 @@ public class AccountFragment extends Fragment {
     public void setActivityLog(View view) {
         activityList.clear();
         RecyclerView recyclerView = view.findViewById(R.id.activity_log_view);
-        ActivityLogAdapter adapter = new ActivityLogAdapter(activityList, ((HomeActivity)getActivity()));
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        adapter = new ActivityLogAdapter(activityList, ((HomeActivity)getActivity()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -146,13 +152,21 @@ public class AccountFragment extends Fragment {
     }
 
     public void setActivityList() {
-        for (int ctr = 0; ctr < 10; ctr ++) {
-            if (ctr % 2 == 0)
-                activityList.add(new ActivityLog("Enrico Zabayle likes Carlos' thread in the forum."));
-            else if (ctr % 3 == 0)
-                activityList.add(new ActivityLog("Enrico Zabayle added a note in APP-DEV"));
-            else
-                activityList.add(new ActivityLog("Enrico Zabayle commented on Andrew's thread in the forum"));
-        }
+        DatabaseReference dbUserActs = FirebaseDatabase.getInstance().getReference("users/" + theuser.getGoogleuid() + "/activities");
+
+        dbUserActs.orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot object: dataSnapshot.getChildren()){
+                    activityList.add(object.getValue().toString());
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

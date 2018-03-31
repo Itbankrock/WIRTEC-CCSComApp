@@ -1,5 +1,6 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.enricozabayle.archerseye.NoteFragment">
@@ -28,12 +29,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/darker_gray"
-            android:paddingBottom="8dp"
+            android:maxLines="2"
+            android:paddingBottom="2dp"
             android:paddingEnd="8dp"
             android:paddingStart="8dp"
             android:paddingTop="3dp"
-            android:singleLine="true"
-            android:text="Note Author" />
+            android:text="Some Description" />
+
+        <TextView
+            android:id="@+id/notes_lastupdated"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/darker_gray"
+            android:lines="1"
+            android:maxLines="1"
+            android:paddingBottom="8dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:text="Some Description"
+            tools:text="Last Updated on January 1, 1970 12:00 AM" />
 
         <EditText
             android:id="@+id/notes_content"
@@ -50,5 +64,53 @@
             android:textSize="18sp" />
 
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/notes_edit_cancel_note"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:clickable="true"
+        android:src="@drawable/ic_cancel"
+        android:tint="@color/cardview_light_background"
+        android:visibility="invisible"
+        app:backgroundTint="@color/DLSUGreenDark"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/notes_edit_save_note"
+        app:rippleColor="@color/cardview_light_background" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/notes_edit_save_note"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:clickable="true"
+        android:src="@drawable/ic_check"
+        android:tint="@color/cardview_light_background"
+        android:visibility="invisible"
+        app:backgroundTint="@color/DLSUGreenDark"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:rippleColor="@color/cardview_light_background" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/notes_edit_edit_note"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:clickable="true"
+        android:src="@drawable/ic_edit"
+        android:tint="@color/cardview_light_background"
+        android:visibility="invisible"
+        app:backgroundTint="@color/DLSUGreenDark"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:rippleColor="@color/cardview_light_background" />
 
 </android.support.constraint.ConstraintLayout>

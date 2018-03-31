@@ -28,20 +28,25 @@
             android:title="DLSU FAQ" />
     </group>
 
-    <group android:id="@+id/admin_group2"
-        android:checkableBehavior="single">
+    <group
+        android:id="@+id/admin_group2"
+        android:checkableBehavior="single"
+        android:visible="true">
         <item
             android:id="@+id/nav_admin_associate"
             android:icon="@drawable/ic_connect"
-            android:title="Associate Course-Prof" />
+            android:title="Associate Course-Prof"
+            android:visible="false" />
         <item
             android:id="@+id/nav_admin_add_course"
             android:icon="@drawable/ic_library_add"
-            android:title="Add Course" />
+            android:title="Add Course"
+            android:visible="false" />
         <item
             android:id="@+id/nav_admin_add_prof"
             android:icon="@drawable/ic_person_add"
-            android:title="Add Professor" />
+            android:title="Add Professor"
+            android:visible="false" />
     </group>
 
     <group android:id="@+id/group3"

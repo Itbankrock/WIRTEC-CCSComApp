@@ -13,6 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +31,9 @@ import java.util.List;
 public class NotificationFragment extends Fragment {
 
     private List<Notification> notifList = new ArrayList<>();
+    private FirebaseUser fbCurrUser = FirebaseAuth.getInstance().getCurrentUser();
+    private NotificationAdapter adapter;
+    private RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,8 +48,8 @@ public class NotificationFragment extends Fragment {
         }
 
         notifList.clear();
-        RecyclerView recyclerView = view.findViewById(R.id.notif_view);
-        NotificationAdapter adapter = new NotificationAdapter(notifList, ((HomeActivity)getActivity()));
+        recyclerView = view.findViewById(R.id.notif_view);
+        adapter = new NotificationAdapter(notifList, ((HomeActivity)getActivity()));
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
@@ -52,11 +63,25 @@ public class NotificationFragment extends Fragment {
     }
 
     public void setNotifList() {
-        for(int ctr = 0; ctr < 10; ctr ++) {
-            if (ctr % 2 == 0)
-                notifList.add(new Notification("Enrico Zabayle likes your thread.", "like"));
-            else
-                notifList.add(new Notification("Enrico Zabayle replies to your thread.", "reply"));
-        }
+        DatabaseReference dbUserNotifs = FirebaseDatabase.getInstance().getReference("users/" + fbCurrUser.getUid() + "/notifications");
+        dbUserNotifs.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot object: dataSnapshot.getChildren()){
+                    if(object.child("notificationType").getValue().toString().equals("like")){
+                        notifList.add(new Notification(object.child("message").getValue().toString(), "like"));
+                    }
+                    else if(object.child("notificationType").getValue().toString().equals("reply")){
+                        notifList.add(new Notification(object.child("message").getValue().toString(), "reply"));
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

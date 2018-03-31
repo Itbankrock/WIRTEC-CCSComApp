@@ -23,6 +23,7 @@
             android:hint="Course Code"
             android:maxLength="7"
             android:maxLines="1"
+            android:textAllCaps="false"
             app:layout_constraintEnd_toStartOf="@+id/linearLayout11"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

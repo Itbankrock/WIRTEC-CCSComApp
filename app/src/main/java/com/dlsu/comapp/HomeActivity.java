@@ -42,7 +42,6 @@ public class HomeActivity extends AppCompatActivity
 
     private TextView navusername;
     private TextView navemail;
-    private TextView welcomemsg;
     private ImageView navpic;
     private User theuser;
     private Toolbar toolbar;
@@ -56,7 +55,6 @@ public class HomeActivity extends AppCompatActivity
     private final static int NEW_REPLY_CODE = 70;
     private final static int EDIT_REPLY_CODE = 71;
     private final static int EDIT_COMMENT_CODE = 80;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,63 +125,32 @@ public class HomeActivity extends AppCompatActivity
         mAuth.addAuthStateListener(mAuthListener);
         fbCurrUser = mAuth.getCurrentUser();
 
+
     }
 
     public void initialize() {
         navItem = 0;
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        DatabaseReference dbAdmins = FirebaseDatabase.getInstance().getReference("admins");
+        dbAdmins.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if( dataSnapshot.hasChild(fbCurrUser.getUid()) ){
+                    Menu nav_Menu = navigationView.getMenu();
+                    nav_Menu.findItem(R.id.nav_admin_add_prof).setVisible(true);
+                    nav_Menu.findItem(R.id.nav_admin_add_course).setVisible(true);
+                    nav_Menu.findItem(R.id.nav_admin_associate).setVisible(true);
+                }
+            }
+            @Override public void onCancelled(DatabaseError databaseError) {}});
+
         View sidebarView = navigationView.getHeaderView(0);
 
         navusername = (TextView) sidebarView.findViewById(R.id.nav_username);
         navemail = (TextView) sidebarView.findViewById(R.id.nav_email);
         navpic = (ImageView) sidebarView.findViewById(R.id.nav_userpic);
-
-        /*
-        DatabaseReference dbtest = FirebaseDatabase.getInstance().getReference("professors");
-        ArrayList<Professor> proflist = new ArrayList<>();
-        proflist.add(new Professor("Arcilla, Mary Jane B.", "mary.arcilla@dlsu.edu.ph", "5.0", "IT Department", "Assistant Professor","delgallego.jpg"));
-        proflist.add(new Professor("Bertumen, Estefanie U.", "estefanie.bertumen@dlsu.edu.ph", "5.0", "IT Department", "Assistant Professor","delgallego.jpg"));
-        proflist.add(new Professor("Cabredo, Rafael A.", "rafael.cabredo@dlsu.edu.ph",  "5.0", "ST Department", "Assistant Professor","delgallego.jpg"));
-        proflist.add(new Professor("Cheng, Charibeth K.", "charibeth.cheng@dlsu.edu.ph", "5.0", "ST Department", "Assistant Professor","delgallego.jpg"));
-        proflist.add(new Professor("Chu, Shirley B.", "shirley.chu@dlsu.edu.ph", "5.0", "ST Department", "Assistant Professor","delgallego.jpg"));
-        proflist.add(new Professor("Cu, Gregory G.", "gregory.cu@dlsu.edu.ph", "5.0", "ST Department", "Assistant Professor","delgallego.jpg"));
-        proflist.add(new Professor("Cu, Jocelynn W.", "jocelynn.cu@dlsu.edu.ph", "5.0", "CT Department", "Assistant Professor","delgallego.jpg"));
-        proflist.add(new Professor("Deja, Jordan Aiko P.", "jordan.deja@dlsu.edu.ph", "5.0", "ST Department", "Assistant Professor","delgallego.jpg"));
-        proflist.add(new Professor("Del Gallego, Neil Patrick A.", "neil.delgallego@dlsu.edu.ph", "5.0", "ST Department", "Assistant Professor","delgallego.jpg"));
-        proflist.add(new Professor("Encarnacion, Alain L.", "alain.encarnacion@dlsu.edu.ph", "5.0", "IT Department", "Assistant Professor","delgallego.jpg"));
-        proflist.add(new Professor("Tighe, Edward P.", "edward.tighe@dlsu.edu.ph", "5.0", "ST Department", "Assistant Professor","delgallego.jpg"));
-
-        for(Professor ey: proflist){
-            String id = dbtest.push().getKey();
-            dbtest.child(id).setValue(ey);
-        }
-
-        DatabaseReference dbtest = FirebaseDatabase.getInstance().getReference("courses");
-
-        ArrayList<Course> courselist = new ArrayList<>();
-
-        courselist.add(new Course("INTR-IT", "IT Fundamentals and the IT Profession", "3.0", "Introduction to IT"));
-        courselist.add(new Course("LOGPROG", "Programming Logic Formulation", "3.0", "Logic & Basic Programming"));
-        courselist.add(new Course("ITORMGT", "Organizations and Management for BSIT", "3.0", "Organization Management for IT"));
-        courselist.add(new Course("INTPRG1", "Introduction to Programming 1", "3.0", "Introduction to Programming 1"));
-        courselist.add(new Course("ARCH-OS", "Computer Architecture and Operating Systems", "3.0", "Architecture of Operating Systems"));
-        courselist.add(new Course("INTPRG2", "Introduction to Programming 2", "3.0", "Introduction to Programming 2"));
-        courselist.add(new Course("INTR-NW", "Introduction to Network", "3.0", "Introduction to Networking"));
-        courselist.add(new Course("SYSTANA", "Systems Analysis", "3.0", "Systems Analysis"));
-        courselist.add(new Course("ANMODEL", "Object-Oriented Analysis Models", "2.0", "Analysis Modeling"));
-        courselist.add(new Course("DASTAPP", "Data Structures and Applications", "3.0", "Data Structures and Application"));
-        courselist.add(new Course("NET-DES", "Network Design", "3.0", "Network Designing"));
-        courselist.add(new Course("SYSTDES", "Systems Design", "3.0", "Systems Design"));
-        courselist.add(new Course("INTR-DB", "Introduction to Databases", "3.0", "Introduction to Databases"));
-
-        for(Course ey: courselist){
-            String id = dbtest.push().getKey();
-            dbtest.child(id).setValue(ey);
-            dbtest.child(id).child("id").setValue(id);
-        }
-
-        */
 
     }
 
@@ -296,8 +263,22 @@ public class HomeActivity extends AppCompatActivity
             fragmentManager.beginTransaction().replace(R.id.main_fragment, adminassociate).addToBackStack(null).commit();
         }
 
-        else if (id == R.id.nav_account && navItem != 6) {
+        else if (id == R.id.nav_admin_add_course && navItem != 6) {
             navItem = 6;
+            AdminAddCourseFragment addCourse = new AdminAddCourseFragment();
+            fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.main_fragment, addCourse).addToBackStack(null).commit();
+        }
+
+        else if (id == R.id.nav_admin_add_prof && navItem != 7) {
+            navItem = 7;
+            AdminAddProfFragment addProf = new AdminAddProfFragment();
+            fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.main_fragment, addProf).addToBackStack(null).commit();
+        }
+
+        else if (id == R.id.nav_account && navItem != 8) {
+            navItem = 8;
             Bundle bundle = new Bundle();
             bundle.putParcelable("theuser", theuser);
             AccountFragment account = new AccountFragment();
@@ -306,6 +287,12 @@ public class HomeActivity extends AppCompatActivity
             fragmentManager.beginTransaction().replace(R.id.main_fragment, account).addToBackStack(null).commit();
         }
 
+        else if (id == R.id.nav_feedback && navItem != 9) {
+            navItem = 9;
+            FeedbackFragment feedback = new FeedbackFragment();
+            fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.main_fragment, feedback).addToBackStack(null).commit();
+        }
 
         else if (id == R.id.nav_logout) {
             mAuth.signOut();
@@ -330,10 +317,17 @@ public class HomeActivity extends AppCompatActivity
         this.navItem = navItem;
     }
 
-    public void viewProfessor(int position, String profID) {
+    public void viewProfessor(Professor theprof) {
+        //fragmentManager = getSupportFragmentManager();
+        //CourseProfFragment fragment = (CourseProfFragment)fragmentManager.findFragmentById(R.id.main_fragment);
+        //fragment.viewProfessor(position);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("prof", theprof);
+        bundle.putParcelable("theUser", theuser );
+        ProfessorFragment prof = new ProfessorFragment();
+        prof.setArguments(bundle);
         fragmentManager = getSupportFragmentManager();
-        CourseProfFragment fragment = (CourseProfFragment)fragmentManager.findFragmentById(R.id.main_fragment);
-        fragment.viewProfessor(position);
+        fragmentManager.beginTransaction().replace(R.id.main_fragment, prof).addToBackStack(null).commit();
     }
 
     public void viewCourse(int position) {
@@ -394,6 +388,7 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == NEW_THREAD_CODE) {
             if(resultCode == Activity.RESULT_OK){
@@ -403,11 +398,17 @@ public class HomeActivity extends AppCompatActivity
                 SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy h:mm a");
                 String timestamp = dateFormat.format(new Date());
 
+
                 DatabaseReference dbtest = FirebaseDatabase.getInstance().getReference("threads");
                 DatabaseReference dbtest2 = FirebaseDatabase.getInstance().getReference("thread_replies");
+
                 final String idthread = dbtest.push().getKey();
                 final ForumThread newThread = new ForumThread(  idthread,newtitle,theuser.getGoogleuid(),timestamp,1,true, newcontent.substring(0, Math.min(newcontent.length(), 20)) + "..."  );
                 dbtest.child(idthread).setValue(newThread);
+
+                DatabaseReference dbUserActs = FirebaseDatabase.getInstance().getReference("users/" + fbCurrUser.getUid() + "/activities");
+                String actKey = dbUserActs.push().getKey();
+                dbUserActs.child(actKey).setValue(fbCurrUser.getDisplayName().split(" ")[0] + " created a new thread in the forums.");
 
                 String idfirstpost = dbtest.child(idthread).child("replies").push().getKey();
                 ThreadPost post = new ThreadPost(idfirstpost,theuser.getGoogleuid(),idthread,newcontent,timestamp,timestamp,true);
@@ -450,7 +451,12 @@ public class HomeActivity extends AppCompatActivity
                 childUpdates.put("from", fbCurrUser.getUid());
                 childUpdates.put("message", fbCurrUser.getDisplayName().split(" ")[0] + " replied to your thread " + thethread.getTitle());
                 childUpdates.put("messagelong", newreply);
+                childUpdates.put("notificationType", "reply");
                 dbtest3.child("notifications").child(notifKey).setValue(childUpdates);
+
+                DatabaseReference dbUserActs = FirebaseDatabase.getInstance().getReference("users/" + fbCurrUser.getUid() + "/activities");
+                String actKey = dbUserActs.push().getKey();
+                dbUserActs.child(actKey).setValue(fbCurrUser.getDisplayName().split(" ")[0] + " replied to a thread: " + thethread.getTitle());
                 }
             }
             if (resultCode == Activity.RESULT_CANCELED) {

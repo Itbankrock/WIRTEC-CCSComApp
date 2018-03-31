@@ -6,10 +6,9 @@ import android.os.Parcelable;
 import java.util.List;
 
 public class Course implements Parcelable {
-    private String id, code, desc, units, overview;
+    private String id, desc, units, overview;
 
-    public Course(String code, String desc, String units, String overview){
-        this.code = code;
+    public Course(String desc, String units, String overview){
         this.desc = desc;
         this.units = units;
         this.overview = overview;
@@ -17,9 +16,8 @@ public class Course implements Parcelable {
 
     public Course(){}
 
-    public Course(String id, String code, String desc, String units, String overview){
-        this. id = id;
-        this.code = code;
+    public Course(String id, String desc, String units, String overview){
+        this.id = id;
         this.desc = desc;
         this.units = units;
         this.overview = overview;
@@ -27,7 +25,6 @@ public class Course implements Parcelable {
 
     protected Course(Parcel in) {
         id = in.readString();
-        code = in.readString();
         desc = in.readString();
         units = in.readString();
         overview = in.readString();
@@ -51,14 +48,6 @@ public class Course implements Parcelable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public String getDesc() {
@@ -93,7 +82,6 @@ public class Course implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(id);
-        parcel.writeString(code);
         parcel.writeString(desc);
         parcel.writeString(units);
         parcel.writeString(overview);

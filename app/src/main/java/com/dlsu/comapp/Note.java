@@ -8,20 +8,28 @@ import android.os.Parcelable;
  */
 
 public class Note implements Parcelable {
-    private String title, author, content, date;
+    private String id, courseID, title, author, content, date, lastupdated;
 
-    public Note (String title, String author, String content, String date) {
+    public Note (String id, String courseID, String title, String author, String content, String date, String lastupdated) {
+        this.id = id;
+        this.courseID = courseID;
         this.title = title;
         this.author = author;
         this.content = content;
         this.date = date;
+        this.lastupdated = lastupdated;
     }
 
+    public Note(){}
+
     protected Note(Parcel in) {
+        id = in.readString();
         title = in.readString();
+        courseID = in.readString();
         author = in.readString();
         content = in.readString();
         date = in.readString();
+        lastupdated = in.readString();
     }
 
     public static final Creator<Note> CREATOR = new Creator<Note>() {
@@ -68,6 +76,30 @@ public class Note implements Parcelable {
         this.author = author;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getLastupdated() {
+        return lastupdated;
+    }
+
+    public void setLastupdated(String lastupdated) {
+        this.lastupdated = lastupdated;
+    }
+
+    public String getCourseID() {
+        return courseID;
+    }
+
+    public void setCourseID(String courseID) {
+        this.courseID = courseID;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -75,9 +107,12 @@ public class Note implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
         parcel.writeString(title);
         parcel.writeString(author);
         parcel.writeString(content);
         parcel.writeString(date);
+        parcel.writeString(lastupdated);
+        parcel.writeString(courseID);
     }
 }

@@ -1,6 +1,7 @@
 package com.dlsu.comapp;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.Spinner;
@@ -34,6 +36,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,6 +56,7 @@ public class ProfessorFragment extends Fragment {
     public List<Review> reviewList = new ArrayList<>();
     ArrayList<String> courses = new ArrayList<>();
     private DatabaseReference dbProf = FirebaseDatabase.getInstance().getReference("professors");
+    private DatabaseReference dbProfRev = FirebaseDatabase.getInstance().getReference("prof_reviews");
     private DatabaseReference dbUserActivity = FirebaseDatabase.getInstance().getReference("users");
     private DatabaseReference dbProfCourses = FirebaseDatabase.getInstance().getReference("courses");
     private CourseSpinnerAdapter courseAdapter;
@@ -66,6 +70,12 @@ public class ProfessorFragment extends Fragment {
     private ProgressBar revprogressbar;
     private RecyclerView recyclerView;
     private CardView readAll;
+    private TextView profRating;
+    private RatingBar curRating;
+    private ImageView profpic;
+
+    private long totalrevcount;
+    float total;
 
     //variables for checking if user has reviewed selected course for prof
     private String idpewds;
@@ -91,14 +101,14 @@ public class ProfessorFragment extends Fragment {
         prof = getArguments().getParcelable("prof");
         theuser = getArguments().getParcelable("theUser");
         //Course(String id, String code, String desc, String units, String overview)
-        courselist.add(new Course("myid","Choose a course...","EYYY","0.0","EYYYY"));
+        courselist.add(new Course("Choose a course...","EYY","0.0","0.0"));
 
         //THIS VERY LONG CODE SEGMENT LOADS THE COURSES THAT THE PROF IS ASSOCIATED TO IN THE DB
         dbProf.child(prof.getId()).child("courses").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 courselist.clear();
-                courselist.add(new Course("myid","Choose a course...","EYYY","0.0","EYYYY"));
+                courselist.add(new Course("Choose a course...","EYY","0.0","0.0"));
                 for(DataSnapshot object: dataSnapshot.getChildren()){
                     dbProfCourses.child(object.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -117,21 +127,22 @@ public class ProfessorFragment extends Fragment {
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                         final String courseID = courseAdapter.getItem(coursesSpinner.getSelectedItemPosition()).getId();
                         dbProf = FirebaseDatabase.getInstance().getReference("prof_reviews");
-                        dbUserActivity.child(theuser.getGoogleuid()).child("activities").child("prof_reviews").addListenerForSingleValueEvent(new ValueEventListener() {
+                        dbUserActivity.child(theuser.getGoogleuid()).child("prof_reviews").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 revprogressbar.setVisibility(View.VISIBLE);
-                                for(final DataSnapshot object: dataSnapshot.getChildren()){
+                                for( final DataSnapshot object: dataSnapshot.getChildren()){
                                     String coursecheck = object.child("course").getValue().toString();
                                     String profcheck = object.child("prof").getValue().toString();
+                                    Log.e("HMMM CHECKER","coursecheck: " + coursecheck + " profcheck: " + profcheck);
                                     if( coursecheck.equals(courseID) && profcheck.equals(prof.getId()) ){
-                                        dbProf.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        dbProf.child(object.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
                                                 idpewds = object.getKey();
                                                 isReviewed = true;
-                                                String contentpewds = dataSnapshot.child(object.getKey()).child("reviewContent").getValue().toString();
-                                                float ratingpewds = dataSnapshot.child(object.getKey()).child("reviewRating").getValue(Float.class);
+                                                String contentpewds = dataSnapshot.child("reviewContent").getValue().toString();
+                                                float ratingpewds = dataSnapshot.child("reviewRating").getValue(Float.class);
                                                 reviewtv.setText(contentpewds);
                                                 rb.setRating(ratingpewds);
                                                 submit.setText("UPDATE REVIEW");
@@ -146,7 +157,6 @@ public class ProfessorFragment extends Fragment {
                                         reviewtv.setText("");
                                         rb.setRating(0.0f);
                                         isReviewed = false;
-                                        break;
                                     }
                                 }
                                 revprogressbar.setVisibility(View.GONE);
@@ -166,6 +176,7 @@ public class ProfessorFragment extends Fragment {
             }
         });
         //END OF VERY LONG CODE SEGMENT
+        profpic = view.findViewById(R.id.prof_userpic);
         readAll = view.findViewById(R.id.review_all_button);
         revprogressbar = view.findViewById(R.id.yourrev_progressbar);
         progressbar = view.findViewById(R.id.allreviews_progressbar);
@@ -181,15 +192,17 @@ public class ProfessorFragment extends Fragment {
         profPos.setText(prof.getPosition());
         TextView profDept = view.findViewById(R.id.prof_dept);
         profDept.setText(prof.getDepartment());
-        TextView profRating = view.findViewById(R.id.prof_rating);
+        profRating = view.findViewById(R.id.prof_rating);
         profRating.setText(prof.getRating());
+
+        Picasso.with( getActivity() ).load( prof.getPhotourl() ).into(profpic);
 
         coursesSpinner = view.findViewById(R.id.courses_spinner);
         courseAdapter = new CourseSpinnerAdapter(getActivity().getApplicationContext(),
                 R.layout.spinner_textview, courselist);
         coursesSpinner.setAdapter(courseAdapter);
 
-        RatingBar curRating = view.findViewById(R.id.cur_rating);
+        curRating = view.findViewById(R.id.cur_rating);
         curRating.setRating(Float.parseFloat(prof.getRating()));
 
         reviewList.clear();
@@ -201,6 +214,7 @@ public class ProfessorFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(rRdapter);
 
+        updateProfRating();
         setReviewList();
         courseAdapter.notifyDataSetChanged();
 
@@ -223,6 +237,7 @@ public class ProfessorFragment extends Fragment {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmm");
                     String timestamp = dateFormat.format(new Date());
                     dbProf = FirebaseDatabase.getInstance().getReference("prof_reviews");
+                    final DatabaseReference dbProfEy = FirebaseDatabase.getInstance().getReference("professors/" + prof.getId() + "/prof_reviews");
 
                     timestamp = dateFormat.format(new Date());
                     final String courseID = courseAdapter.getItem(coursesSpinner.getSelectedItemPosition()).getId();
@@ -238,9 +253,14 @@ public class ProfessorFragment extends Fragment {
                                 reviewtv.setText("");
                                 rb.setRating(0.0f);
                                 coursesSpinner.setSelection(0);
-                                dbUserActivity.child(theuser.getGoogleuid()).child("activities").child("prof_reviews").child(idpewds).child("course").setValue(courseID);
-                                dbUserActivity.child(theuser.getGoogleuid()).child("activities").child("prof_reviews").child(idpewds).child("prof").setValue(prof.getId());
+                                dbUserActivity.child(theuser.getGoogleuid()).child("prof_reviews").child(idpewds).child("course").setValue(courseID);
+                                dbUserActivity.child(theuser.getGoogleuid()).child("prof_reviews").child(idpewds).child("prof").setValue(prof.getId());
+                                dbProfEy.child(idpewds).setValue(true);
                                 dbProf.child(idpewds).child("likerscount").setValue(0);
+
+                                DatabaseReference eyeyeeyey = FirebaseDatabase.getInstance().getReference("users/" + theuser.getGoogleuid() + "/activities");
+                                String actKey = eyeyeeyey.push().getKey();
+                                eyeyeeyey.child(actKey).setValue(theuser.getName().split(" ")[0] + " reviewed a prof: " + prof.getName());
                             }
                         });
                     }
@@ -260,6 +280,7 @@ public class ProfessorFragment extends Fragment {
 
                     }
                     setReviewList();
+                    updateProfRating();
                 }
                 else{
                     Toast.makeText(getActivity(), "Please complete the review form.", Toast.LENGTH_SHORT).show();
@@ -289,6 +310,43 @@ public class ProfessorFragment extends Fragment {
                 progressbar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
                 readAll.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void updateProfRating(){
+        totalrevcount = 0;
+        total = 0.0f;
+        DatabaseReference pota = FirebaseDatabase.getInstance().getReference("professors");
+        pota.child(prof.getId()).child("prof_reviews").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot object: dataSnapshot.getChildren()){
+                    dbProfRev.child(object.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            total += dataSnapshot.child("reviewRating").getValue(Float.class);
+                            totalrevcount++;
+                            Log.e("Check","total is: " + total + " totalcount: " + totalrevcount);
+                        }
+                        @Override public void onCancelled(DatabaseError databaseError) {}});
+                }
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        profRating.setText(String.format("%.1f", total / totalrevcount));
+                        curRating.setRating(total / totalrevcount);
+                    }
+                }, 1000);
+
+
+
             }
 
             @Override

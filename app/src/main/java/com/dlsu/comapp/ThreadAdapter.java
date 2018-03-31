@@ -52,7 +52,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.MyViewHold
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView userfname,datecreated,content,numlikes,lastupdated;
         public ImageView userpic;
-        public ImageButton replybutton,likebutton,deletebutton,editbutton;
+        public ImageButton likebutton,deletebutton,editbutton;
         public LinearLayout editorslayout;
 
         public MyViewHolder(View view) {
@@ -63,7 +63,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.MyViewHold
             content = (TextView) view.findViewById(R.id.rv_threadpost_maincontent);
             numlikes = (TextView) view.findViewById(R.id.rv_threadpost_numlikes);
             userpic = (ImageView) view.findViewById(R.id.rv_threadpost_userpic);
-            replybutton = (ImageButton) view.findViewById(R.id.rv_threadpost_replybutton);
+            //replybutton = (ImageButton) view.findViewById(R.id.rv_threadpost_replybutton);
             likebutton = (ImageButton) view.findViewById(R.id.rv_threadpost_likebutton);
             deletebutton = (ImageButton) view.findViewById(R.id.rv_threadpost_deletebutton);
             editbutton = (ImageButton) view.findViewById(R.id.rv_threadpost_editbutton);
@@ -145,6 +145,10 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.MyViewHold
                             dbPost.child("likers").child(fbCurrUser.getUid()).setValue("liked");
                         }
                     });
+
+                    DatabaseReference dbUserActs = FirebaseDatabase.getInstance().getReference("users/" + fbCurrUser.getUid() + "/activities");
+                    String actKey = dbUserActs.push().getKey();
+                    dbUserActs.child(actKey).setValue(fbCurrUser.getDisplayName().split(" ")[0] + " liked a thread post.");
                 }
             }
             @Override

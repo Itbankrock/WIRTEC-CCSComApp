@@ -111,6 +111,6 @@ public class HomeFragment extends Fragment {
 
 
 
-        welcomemsg.setText("Archer " + theuser.getName().split(" ")[0]);
+        welcomemsg.setText("Welcome, Archer " + theuser.getName().split(" ")[0] + "!");
     }
 }

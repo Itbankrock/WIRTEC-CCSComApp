@@ -23,7 +23,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Enrico Zabayle and Andrew Santiago on 14/03/2018 to 19/03/2018
@@ -125,6 +127,27 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MyViewHold
                         public void onClick(View view) {
                             dbPost.child("likerscount").setValue(i + 1);
                             dbPost.child("likers").child(fbCurrUser.getUid()).setValue("liked");
+
+                            DatabaseReference dbtest3 = FirebaseDatabase.getInstance().getReference("users/" + review.getUserID());
+                            String thecontent = review.getReviewContent();
+
+                            if(!fbCurrUser.getUid().equals(review.getUserID())){
+                                if(review.getReviewContent().length() >= 20){
+                                    thecontent = thecontent.substring(0,19) + "...";
+                                }
+                                String notifKey = dbtest3.child("notifications").push().getKey();
+                                Map<String, Object> childUpdates = new HashMap<>();
+                                childUpdates.put("from", fbCurrUser.getUid());
+                                childUpdates.put("message", fbCurrUser.getDisplayName().split(" ")[0] + " liked your prof review");
+                                childUpdates.put("messagelong", thecontent);
+                                childUpdates.put("notificationType", "like");
+                                dbtest3.child("notifications").child(notifKey).setValue(childUpdates);
+
+                                DatabaseReference dbUserActs = FirebaseDatabase.getInstance().getReference("users/" + fbCurrUser.getUid() + "/activities");
+                                String actKey = dbUserActs.push().getKey();
+                                dbUserActs.child(actKey).setValue(fbCurrUser.getDisplayName().split(" ")[0] + " liked a prof review.");
+                            }
+
                         }
                     });
                 }

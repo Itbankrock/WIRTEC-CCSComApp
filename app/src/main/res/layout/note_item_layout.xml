@@ -21,9 +21,9 @@
                 android:layout_height="100dp"
                 android:background="@color/colorPrimaryDark"
                 android:ems="10"
+                android:focusable="false"
                 android:gravity="top|left"
                 android:inputType="none"
-                android:focusable="false"
                 android:padding="8dp"
                 android:text="Write your notes here."
                 android:textColor="@android:color/white"
@@ -82,7 +82,8 @@
                 android:layout_below="@+id/rv_notes_content"
                 android:layout_marginEnd="8dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_menu" />
+                android:src="@drawable/ic_menu"
+                android:visibility="gone" />
 
         </RelativeLayout>
 

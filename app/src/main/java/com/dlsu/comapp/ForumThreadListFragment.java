@@ -58,7 +58,7 @@ public class ForumThreadListFragment extends Fragment implements SwipeRefreshLay
         recyclerView.setVisibility(View.INVISIBLE);
         fabNew = (FloatingActionButton) view.findViewById(R.id.fab_newThread);
 
-        getActivity().setTitle("Forums");
+        getActivity().setTitle("Forum");
         ((HomeActivity)getActivity()).setNavItem(3);
         final NavigationView navigationView = ((HomeActivity)getActivity()).getNavigationView();
         navigationView.getMenu().getItem(3).setChecked(true);
@@ -70,21 +70,6 @@ public class ForumThreadListFragment extends Fragment implements SwipeRefreshLay
                 android.R.color.holo_green_dark,
                 android.R.color.holo_orange_dark,
                 android.R.color.holo_blue_dark);
-
-        /**
-         * Showing Swipe Refresh animation on activity create
-         * As animation won't start on onCreate, post runnable is used
-         */
-        mSwipeRefreshLayout.post(new Runnable() {
-
-            @Override
-            public void run() {
-
-                mSwipeRefreshLayout.setRefreshing(true);
-                // Fetching data from server
-                prepareforumList();
-            }
-        });
 
 
         //Opens a the new thread Activity Form
@@ -104,7 +89,20 @@ public class ForumThreadListFragment extends Fragment implements SwipeRefreshLay
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-        prepareforumList();
+        /**
+         * Showing Swipe Refresh animation on activity create
+         * As animation won't start on onCreate, post runnable is used
+         */
+        mSwipeRefreshLayout.post(new Runnable() {
+
+            @Override
+            public void run() {
+
+                mSwipeRefreshLayout.setRefreshing(true);
+                // Fetching data from server
+                prepareforumList();
+            }
+        });
 
         return view;
     }

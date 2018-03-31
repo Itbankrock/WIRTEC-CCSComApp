@@ -32,7 +32,7 @@ public class HelpFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        getActivity().setTitle("FAQ");
+        getActivity().setTitle("DLSU FAQ");
         ((HomeActivity)getActivity()).setNavItem(4);
         final NavigationView navigationView = ((HomeActivity)getActivity()).getNavigationView();
         navigationView.getMenu().getItem(4).setChecked(true);

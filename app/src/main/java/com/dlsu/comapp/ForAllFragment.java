@@ -83,7 +83,7 @@ public class ForAllFragment extends Fragment {
 
         Collections.sort(courselist, new Comparator<Course>() {
             public int compare(Course a, Course b) {
-                return a.getCode().compareTo(b.getCode());
+                return a.getId().compareTo(b.getId());
             }
         });
     }
