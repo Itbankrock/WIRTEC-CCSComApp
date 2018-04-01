@@ -1,9 +1,10 @@
 package com.dlsu.comapp;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,6 +14,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -45,6 +47,8 @@ public class CourseFragment extends Fragment {
     private ProgressBar notesprogress;
     private RecyclerView.LayoutManager nLayoutManager;
     private NoteAdapter nAdapter;
+    private SearchView notessearchview;
+    private boolean checker = false;
 
     public CourseFragment () {
         // Required empty public constructor
@@ -108,6 +112,13 @@ public class CourseFragment extends Fragment {
             }
         });
 
+        notessearchview = view.findViewById(R.id.notes_searchview);
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        notessearchview.setSearchableInfo(searchManager
+                .getSearchableInfo(getActivity().getComponentName()));
+        notessearchview.setMaxWidth(Integer.MAX_VALUE);
+
         return view;
     }
 
@@ -135,22 +146,40 @@ public class CourseFragment extends Fragment {
 
     public void setNoteList() {
         notesprogress.setVisibility(View.VISIBLE);
-        noteList.clear();
+        nAdapter.clearItems();
         final DatabaseReference dbnotes = FirebaseDatabase.getInstance().getReference("notes");
         final DatabaseReference dbcoursenotes = FirebaseDatabase.getInstance().getReference("courses/" + course.getId() + "/notes");
         dbcoursenotes.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                checker = false;
                 for(DataSnapshot object: dataSnapshot.getChildren()){
                     if(object.getValue(Boolean.class)){
                         dbnotes.child(object.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 nAdapter.addItem(dataSnapshot.getValue(Note.class));
+                                checker = true;
                             }@Override public void onCancelled(DatabaseError databaseError) {}});
                     }
 
                 }
+                notessearchview.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        // filter recycler view when query submitted
+                        nAdapter.getFilter().filter(query);
+                        return false;
+                    }
+                    @Override
+                    public boolean onQueryTextChange(String query) {
+                        // filter recycler view when text is changed
+                        nAdapter.getFilter().filter(query);
+                        Log.e("HEY QUERY","VSAUCE HERE");
+                        return false;
+                    }
+                });
+
                 notesprogress.setVisibility(View.GONE);
             }
 

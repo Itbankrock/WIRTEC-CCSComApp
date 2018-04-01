@@ -101,7 +101,8 @@ public class FullReviewFragment extends Fragment {
                                 childUpdates.put("from", fbCurrUser.getUid());
                                 childUpdates.put("message", fbCurrUser.getDisplayName().split(" ")[0] + " commented on your review");
                                 childUpdates.put("messagelong", commentbox.getText().toString());
-                                childUpdates.put("notificationType", "reply");
+                                childUpdates.put("notificationType", "comment");
+                                childUpdates.put("associatedID", reviewID);
                                 dbtest3.child("notifications").child(notifKey).setValue(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override public void onComplete(@NonNull Task<Void> task) {commentbox.setText("");}});
                             }

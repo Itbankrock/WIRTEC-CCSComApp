@@ -1,11 +1,18 @@
 package com.dlsu.comapp;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.icu.util.Freezable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,6 +54,7 @@ public class HomeActivity extends AppCompatActivity
     private User theuser;
     private Toolbar toolbar;
     private threadFragment thread;
+    private ProgressDialog progressDialog;
 
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
@@ -55,6 +64,7 @@ public class HomeActivity extends AppCompatActivity
     private final static int NEW_REPLY_CODE = 70;
     private final static int EDIT_REPLY_CODE = 71;
     private final static int EDIT_COMMENT_CODE = 80;
+    private final static int EDIT_THREAD_CODE = 68;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +89,12 @@ public class HomeActivity extends AppCompatActivity
         initialize();
 
         //INITIALIZE THE USER IN DB
+        progressDialog = new ProgressDialog(this,R.style.MyAlertDialogStyle);
+        progressDialog.setMessage("Fetching data..."); // Setting Message
+        progressDialog.setTitle("CCS ComApp"); // Setting Title
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Spinner
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         dbUsers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -108,15 +124,51 @@ public class HomeActivity extends AppCompatActivity
                 resetStack();
                 fragmentManager.beginTransaction().replace(R.id.main_fragment, home, "A").commit();
                 initializeDrawer();
+
+                String notif = getIntent().getStringExtra("notifType");
+                if (notif != null) {
+                    if(notif.equals("comment")){
+                        viewFullReview(getIntent().getStringExtra("assocID"),getIntent().getStringExtra("makerID"));
+                        progressDialog.cancel();
+                    }
+                    else if(notif.equals("reply")){
+                        DatabaseReference dbThread = FirebaseDatabase.getInstance().getReference("threads/" + getIntent().getStringExtra("assocID"));
+                        dbThread.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                viewThread(dataSnapshot.getValue(ForumThread.class));
+                            }
+                            @Override public void onCancelled(DatabaseError databaseError) {}});
+                    }
+
+                }
+                else{
+                    progressDialog.cancel();
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                progressDialog.cancel();
+                Toast.makeText(getApplicationContext(),"Cannot download data from the internet.",Toast.LENGTH_SHORT).show();
             }
         });//INITIALIZE THE USER IN DB
 
     }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String notifType = intent.getStringExtra("notifType");
+
+            if(notifType.equals("comment")){
+                String makerID = intent.getStringExtra("makerID");
+                String assocID = intent.getStringExtra("assocID");
+                viewFullReview(assocID,makerID);
+            }
+        }
+    };
 
     @Override
     protected void onStart() {
@@ -125,7 +177,15 @@ public class HomeActivity extends AppCompatActivity
         mAuth.addAuthStateListener(mAuthListener);
         fbCurrUser = mAuth.getCurrentUser();
 
+        LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),
+                new IntentFilter("MyData")
+        );
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
 
     public void initialize() {
@@ -366,7 +426,6 @@ public class HomeActivity extends AppCompatActivity
         fragmentManager.beginTransaction().replace(R.id.main_fragment, fullReview).addToBackStack(null).commit();
     }
 
-
     public void updateUserSession(){
         dbUsers = FirebaseDatabase.getInstance().getReference("users").child(theuser.getGoogleuid());
         dbUsers.addValueEventListener(new ValueEventListener() {
@@ -452,6 +511,7 @@ public class HomeActivity extends AppCompatActivity
                 childUpdates.put("message", fbCurrUser.getDisplayName().split(" ")[0] + " replied to your thread " + thethread.getTitle());
                 childUpdates.put("messagelong", newreply);
                 childUpdates.put("notificationType", "reply");
+                childUpdates.put("associatedID", threadid);
                 dbtest3.child("notifications").child(notifKey).setValue(childUpdates);
 
                 DatabaseReference dbUserActs = FirebaseDatabase.getInstance().getReference("users/" + fbCurrUser.getUid() + "/activities");
@@ -503,6 +563,15 @@ public class HomeActivity extends AppCompatActivity
                 dbtest2.updateChildren(childUpdates);
                 thread.preparePosts();
 
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+        else if(requestCode == EDIT_THREAD_CODE){
+            if(resultCode == Activity.RESULT_OK){
+                thread.preparePosts();
+                setTitle(data.getStringExtra("newTitleEy"));
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result

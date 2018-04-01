@@ -2,11 +2,15 @@ package com.dlsu.comapp;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -16,13 +20,23 @@ import com.google.firebase.messaging.RemoteMessage;
 
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
+    private LocalBroadcastManager broadcaster;
+    private RemoteMessage msg;
+
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
-        //super.onMessageReceived(remoteMessage);
-        sendNotifications(remoteMessage.getData().get("body"),remoteMessage.getData().get("bodylong"));
+    public void onCreate() {
+        super.onCreate();
+        broadcaster = LocalBroadcastManager.getInstance(this);
     }
 
-    private void sendNotifications(String message, String messagelong){
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        msg = remoteMessage;
+        //super.onMessageReceived(remoteMessage);
+        sendNotifications(remoteMessage.getData().get("body"),remoteMessage.getData().get("bodylong"),remoteMessage.getData().get("notificationType"));
+    }
+
+    private void sendNotifications(String message, String messagelong, String notificationType){
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id))
                 .setSmallIcon(R.drawable.ic_logo_scalable)
                 .setContentTitle(message)
@@ -31,6 +45,19 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(messagelong))
                 .setPriority(NotificationCompat.PRIORITY_MAX);
+
+        if(notificationType.equals("comment")){
+            Intent intent = new Intent(this,HomeActivity.class);
+            intent.putExtra("assocID", msg.getData().get("assocID"));
+            intent.putExtra("makerID",msg.getData().get("makerID"));
+            intent.putExtra("notifType",notificationType);
+
+            PendingIntent pendIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.setContentIntent(pendIntent);
+
+            //broadcaster.sendBroadcast(intent);
+        }
+
 
 
         int mNotificationId = (int) System.currentTimeMillis();

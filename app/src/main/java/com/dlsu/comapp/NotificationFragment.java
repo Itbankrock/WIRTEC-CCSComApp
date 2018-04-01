@@ -71,7 +71,7 @@ public class NotificationFragment extends Fragment {
                     if(object.child("notificationType").getValue().toString().equals("like")){
                         notifList.add(new Notification(object.child("message").getValue().toString(), "like"));
                     }
-                    else if(object.child("notificationType").getValue().toString().equals("reply")){
+                    else if(object.child("notificationType").getValue().toString().equals("reply") || object.child("notificationType").getValue().toString().equals("comment")){
                         notifList.add(new Notification(object.child("message").getValue().toString(), "reply"));
                     }
                 }

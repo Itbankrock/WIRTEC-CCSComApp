@@ -77,6 +77,7 @@ public class ForumThreadListFragment extends Fragment implements SwipeRefreshLay
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(  ((HomeActivity)getActivity()) ,  NewThreadForm.class  );
+                i.putExtra("sendAction","newThread");
                 ((HomeActivity)getActivity()).startActivityForResult(i,NEW_THREAD_CODE);
             }
         });

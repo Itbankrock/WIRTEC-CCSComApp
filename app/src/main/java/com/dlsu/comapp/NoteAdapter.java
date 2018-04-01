@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -24,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +35,10 @@ import java.util.Map;
  * Created by Enrico Zabayle on 09/03/2018.
  */
 
-public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>{
+public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> implements Filterable{
 
     protected List<Note> noteList;
+    protected List<Note> FileterednoteList;
     protected HomeActivity homeContext;
     private FirebaseUser fbCurrUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -57,6 +61,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>{
     public NoteAdapter(List<Note> noteList, HomeActivity homeContext) {
         this.noteList = noteList;
         this.homeContext = homeContext;
+        this.FileterednoteList = noteList;
     }
 
     @Override
@@ -69,7 +74,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>{
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        Note note = noteList.get(position);
+        Note note = FileterednoteList.get(position);
 
         if(fbCurrUser.getUid().equals(note.getAuthor())){
             holder.menu.setVisibility(View.VISIBLE);
@@ -123,7 +128,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>{
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()) {
                 case R.id.delete_note:
-                    final Note thenote = noteList.get(position);
+                    final Note thenote = FileterednoteList.get(position);
 
                     DatabaseReference dbcoursenotes = FirebaseDatabase.getInstance().getReference("courses/" + thenote.getCourseID() + "/notes");
                     Map<String, Object> childUpdates = new HashMap<>();
@@ -133,7 +138,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>{
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             Toast.makeText(homeContext, "Note \"" + thenote.getTitle() + "\" has been deleted", Toast.LENGTH_SHORT).show();
-                            noteList.remove(position);
+                            FileterednoteList.remove(position);
                             notifyDataSetChanged();
                         }
                     });
@@ -147,14 +152,49 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>{
 
     @Override
     public int getItemCount() {
-        return noteList.size();
+        return FileterednoteList.size();
     }
 
     public void addItem(Note object){
-        noteList.add(object);
+        FileterednoteList.add(object);
         notifyDataSetChanged();
     }
     public void clearItems(){
-        noteList.clear();
+        FileterednoteList.clear();
     }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                if (charString.isEmpty()) {
+                    FileterednoteList = noteList;
+                } else {
+                    List<Note> filteredList = new ArrayList<>();
+                    for (Note row : noteList) {
+                        // name match condition. this might differ depending on your requirement
+                        // here we are looking for name or phone number match
+                        if (row.getTitle().toLowerCase().contains(charString.toLowerCase())  ) {
+                            filteredList.add(row);
+                        }
+                    }
+
+                    FileterednoteList = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = FileterednoteList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                FileterednoteList = (ArrayList<Note>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
 }

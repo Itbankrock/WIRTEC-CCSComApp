@@ -1,10 +1,13 @@
 package com.dlsu.comapp;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Andrew Santiago on 3/11/2018.
  */
 
-public class ThreadPost {
+public class ThreadPost implements Parcelable {
     private String id;
     private String userID;
     private String postID;
@@ -22,6 +25,28 @@ public class ThreadPost {
         this.isActive = isActive;
         this.lastupdated = lastupdated;
     }
+
+    protected ThreadPost(Parcel in) {
+        id = in.readString();
+        userID = in.readString();
+        postID = in.readString();
+        content = in.readString();
+        timestamp = in.readString();
+        isActive = true;
+        lastupdated = in.readString();
+    }
+
+    public static final Creator<ThreadPost> CREATOR = new Creator<ThreadPost>() {
+        @Override
+        public ThreadPost createFromParcel(Parcel in) {
+            return new ThreadPost(in);
+        }
+
+        @Override
+        public ThreadPost[] newArray(int size) {
+            return new ThreadPost[size];
+        }
+    };
 
     public ThreadPost(){}
 
@@ -79,5 +104,20 @@ public class ThreadPost {
 
     public void setLastupdated(String lastupdated) {
         this.lastupdated = lastupdated;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(userID);
+        parcel.writeString(postID);
+        parcel.writeString(content);
+        parcel.writeString(timestamp);
+        parcel.writeString(lastupdated);
     }
 }

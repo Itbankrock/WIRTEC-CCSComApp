@@ -44,6 +44,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.MyViewHold
     private threadFragment tContext;
     private Context mainContext;
     private final static int EDIT_REPLY_CODE = 71;
+    private final static int EDIT_THREAD_CODE = 68;
     private ProgressDialog progressDialog;
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -99,6 +100,29 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.MyViewHold
             holder.editorslayout.setVisibility(View.VISIBLE);
             if(position == 0){
                 holder.deletebutton.setVisibility(View.GONE);
+
+                holder.editbutton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent i = new Intent( ((HomeActivity)(tContext.getActivity()) ) ,  NewThreadForm.class  );
+                        i.putExtra("sendAction","editThread");
+                        i.putExtra("threadID",post.getPostID());
+                        i.putExtra("thepost",post);
+                        tContext.getActivity().startActivityForResult(i,EDIT_THREAD_CODE);
+                    }
+                });
+            }
+            else{
+                holder.editbutton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent i = new Intent(  ((HomeActivity)tContext.getActivity()) ,  NewReplyThread.class  );
+                        i.putExtra("leaction","editreply");
+                        i.putExtra("replyID",post.getId());
+                        i.putExtra("existingcontent",post.getContent());
+                        ((HomeActivity) tContext.getActivity() ).startActivityForResult(i,EDIT_REPLY_CODE);
+                    }
+                });
             }
         }
 
@@ -153,18 +177,6 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.MyViewHold
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        holder.editbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(  ((HomeActivity)tContext.getActivity()) ,  NewReplyThread.class  );
-                i.putExtra("leaction","editreply");
-                i.putExtra("replyID",post.getId());
-                i.putExtra("existingcontent",post.getContent());
-                ((HomeActivity) tContext.getActivity() ).startActivityForResult(i,EDIT_REPLY_CODE);
             }
         });
 
