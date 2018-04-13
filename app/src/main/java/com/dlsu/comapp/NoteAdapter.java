@@ -74,7 +74,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        Note note = FileterednoteList.get(position);
+        final Note note = FileterednoteList.get(position);
 
         if(fbCurrUser.getUid().equals(note.getAuthor())){
             holder.menu.setVisibility(View.VISIBLE);
@@ -102,7 +102,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                homeContext.viewNote(position);
+                homeContext.viewNote(note);
             }
         });
     }

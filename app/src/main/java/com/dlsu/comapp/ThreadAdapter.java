@@ -27,7 +27,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +102,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.MyViewHold
             holder.editorslayout.setVisibility(View.VISIBLE);
             if(position == 0){
                 holder.deletebutton.setVisibility(View.GONE);
+                holder.editbutton.setImageResource(R.drawable.ic_master_edit);
 
                 holder.editbutton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -167,12 +170,14 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.MyViewHold
                         @Override
                         public void onClick(View view) {
                             dbPost.child("likers").child(fbCurrUser.getUid()).setValue("liked");
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy h:mm a");
+                            String timestamp = dateFormat.format(new Date());
+
+                            DatabaseReference dbUserActs = FirebaseDatabase.getInstance().getReference("users/" + fbCurrUser.getUid() + "/activities");
+                            String actKey = dbUserActs.push().getKey();
+                            dbUserActs.child(actKey).setValue(timestamp + " - " + fbCurrUser.getDisplayName().split(" ")[0] + " liked a thread post.");
                         }
                     });
-
-                    DatabaseReference dbUserActs = FirebaseDatabase.getInstance().getReference("users/" + fbCurrUser.getUid() + "/activities");
-                    String actKey = dbUserActs.push().getKey();
-                    dbUserActs.child(actKey).setValue(fbCurrUser.getDisplayName().split(" ")[0] + " liked a thread post.");
                 }
             }
             @Override

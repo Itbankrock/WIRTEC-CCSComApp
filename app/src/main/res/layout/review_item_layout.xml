@@ -11,7 +11,7 @@
         android:layout_height="60dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/delgallego"
+        android:src="@drawable/ic_launcher_background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,9 +42,9 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="16dp"
-                android:layout_toStartOf="@+id/review_like"
+                android:layout_toStartOf="@+id/rv_review_like"
                 android:fontFamily="sans-serif-condensed"
-                android:text="Neil Patrick A. Del Gallego"
+                android:text="Name"
                 android:textAlignment="viewStart"
                 android:textColor="@android:color/black"
                 android:textStyle="bold" />
@@ -79,7 +79,7 @@
                 android:layout_marginStart="4dp"
                 android:layout_toEndOf="@+id/rv_review_rating"
                 android:fontFamily="sans-serif-condensed"
-                android:text="March 14, 2018"
+                android:text="Date"
                 android:textAlignment="center"
                 android:textSize="12sp" />
 
@@ -92,7 +92,7 @@
                 android:layout_below="@+id/rv_review_like"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
-                android:text="10K"
+                android:text="0"
                 android:textSize="10sp"
                 tools:layout_editor_absoluteX="341dp"
                 tools:layout_editor_absoluteY="0dp" />
@@ -104,7 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-condensed"
-            android:text="WEBTECH"
+            android:text="COURSE"
             android:textAlignment="viewStart"
             android:textColor="@android:color/black" />
 
@@ -114,7 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:fontFamily="sans-serif-condensed"
-            android:text="I haven't been able to Unfollow people on my Friends List for over 2 years now. Even if there's a new update or not, the Unfollow option just doesn't work! I thought it was my phone that was the problem, so I logged into my account via my girlfriend's tablet and still, the same thing....the Unfollow option doesn't work whenever I select it. I've sent Facebook more than a few messages about it over the past two years, but you have never fixed it. I'm sick of it."
+            android:text="Review content."
             android:textAlignment="viewStart"
             android:textColor="@android:color/black" />
     </LinearLayout>

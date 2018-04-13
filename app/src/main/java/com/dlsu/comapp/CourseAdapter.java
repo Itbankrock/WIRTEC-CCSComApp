@@ -46,7 +46,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        Course course = FilteredCourseList.get(position);
+        final Course course = FilteredCourseList.get(position);
         holder.code.setText(course.getId());
         holder.desc.setText(course.getDesc());
         holder.units.setText(course.getUnits());
@@ -55,7 +55,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.MyViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                homeContext.viewCourse(position);
+                homeContext.viewCourse(course);
             }
         });
     }

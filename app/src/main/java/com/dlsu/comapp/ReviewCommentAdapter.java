@@ -1,7 +1,11 @@
 package com.dlsu.comapp;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,10 +31,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Created by Enrico Zabayle on 20/03/2018.
+ * Created by Enrico Zabayle and Andrew Santiago on 20/03/2018.
  */
 
 public class ReviewCommentAdapter extends RecyclerView.Adapter<ReviewCommentAdapter.MyViewHolder>{
@@ -36,9 +44,12 @@ public class ReviewCommentAdapter extends RecyclerView.Adapter<ReviewCommentAdap
     protected List<ReviewComment> reviewCommentList;
     protected HomeActivity homeContext;
     protected Context mainContext;
-    private DatabaseReference dbUsers = FirebaseDatabase.getInstance().getReference("users");
+    private FirebaseDatabase maindb = FirebaseDatabase.getInstance();
+    private DatabaseReference dbUsers = maindb.getReference("users");
     private FirebaseUser fbCurrUser = FirebaseAuth.getInstance().getCurrentUser();
     private final static int EDIT_COMMENT_CODE = 80;
+    private ProgressDialog progressDialog;
+    private FullReviewFragment fragContext;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView userfname,datecreated,content,lastupdated;
@@ -60,9 +71,10 @@ public class ReviewCommentAdapter extends RecyclerView.Adapter<ReviewCommentAdap
     }
 
 
-    public ReviewCommentAdapter(List<ReviewComment> reviewCommentList, HomeActivity homeContext) {
+    public ReviewCommentAdapter(List<ReviewComment> reviewCommentList, HomeActivity homeContext, FullReviewFragment fragContext) {
         this.reviewCommentList = reviewCommentList;
         this.homeContext = homeContext;
+        this.fragContext = fragContext;
     }
 
     @Override
@@ -105,6 +117,49 @@ public class ReviewCommentAdapter extends RecyclerView.Adapter<ReviewCommentAdap
                 i.putExtra("commentID",reviewComment.getId());
                 i.putExtra("existingcontent",reviewComment.getContent());
                 homeContext.startActivityForResult(i,EDIT_COMMENT_CODE);
+            }
+        });
+
+
+        holder.deletebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                //Yes button clicked
+                                progressDialog = new ProgressDialog(mainContext,R.style.MyAlertDialogStyle);
+                                progressDialog.setMessage("Deleting your comment..."); // Setting Message
+                                progressDialog.setTitle("Review Comment"); // Setting Title
+                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Spinner
+                                progressDialog.show(); // Display Progress Dialog
+                                progressDialog.setCancelable(false);
+
+                                DatabaseReference dbComment = maindb.getReference("review_comments/" + reviewComment.getId());
+                                Map<String, Object> childUpdates = new HashMap<>();
+                                childUpdates.put("/active/", false);
+
+                                dbComment.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        progressDialog.dismiss();
+                                        fragContext.setReviewCommentList();
+                                    }
+                                });
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                break;
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(mainContext);
+                builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
             }
         });
     }

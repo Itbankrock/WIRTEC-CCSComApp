@@ -63,7 +63,7 @@ public class NewThreadForm extends AppCompatActivity {
             progressDialog.setMessage("Fetching data..."); // Setting Message
             progressDialog.setTitle("Edit thread"); // Setting Title
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Spinner
-            progressDialog.setCancelable(false);
+            progressDialog.setCancelable(true);
             progressDialog.show();
 
             DatabaseReference dbThreads = FirebaseDatabase.getInstance().getReference("threads/" + thepost.getPostID());
@@ -89,6 +89,7 @@ public class NewThreadForm extends AppCompatActivity {
                 //noinspection SimplifiableIfStatement
                 if (id == R.id.newThread_action_submit) {
                     if(receiveAction.equals("newThread")){
+                        //SET IN DB BEFORE FINISHING ACTIVITY PUT PROGRESS BAR
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("newthreadtitle", newThreadTitle.getText().toString());
                         returnIntent.putExtra("newthreadcontent",newThreadContent.getText().toString());
@@ -98,12 +99,12 @@ public class NewThreadForm extends AppCompatActivity {
                         toReturn = true;
                     }
                     else if(receiveAction.equals("editThread")){
-
-                        //SET IN DB BEFORE FINISHING ACTIVITY PUT PROGRESS BAR
                         progressDialog.setMessage("Saving data..."); // Setting Message
                         progressDialog.setTitle("Edit thread"); // Setting Title
-                        progressDialog.setCancelable(false);
+                        progressDialog.setCancelable(true);
                         progressDialog.show();
+
+                        //SET IN DB BEFORE FINISHING ACTIVITY PUT PROGRESS BARF
 
                         final DatabaseReference dbThread = FirebaseDatabase.getInstance().getReference("threads/" + thethread.getId());
                         DatabaseReference dbThreadReplies = FirebaseDatabase.getInstance().getReference("thread_replies/" + thepost.getId());
@@ -126,6 +127,10 @@ public class NewThreadForm extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if(task.isSuccessful()){
                                                 progressDialog.cancel();
+                                                Intent returnIntent = new Intent();
+                                                returnIntent.putExtra("newTitleEy",newThreadTitle.getText().toString());
+                                                setResult(Activity.RESULT_OK, returnIntent);
+                                                finish();
                                             }
                                             else{
                                                 Toast.makeText(getApplicationContext(),"There was an error.",Toast.LENGTH_SHORT).show();
@@ -139,10 +144,6 @@ public class NewThreadForm extends AppCompatActivity {
 
                             }
                         });
-                        Intent returnIntent = new Intent();
-                        returnIntent.putExtra("newTitleEy",newThreadTitle.getText().toString());
-                        setResult(Activity.RESULT_OK, returnIntent);
-                        finish();
                         toReturn = true;
                     }
 
@@ -156,6 +157,5 @@ public class NewThreadForm extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        progressDialog.dismiss();
     }
 }

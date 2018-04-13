@@ -123,8 +123,9 @@
                 android:layout_marginTop="16dp"
                 android:layout_weight="1"
                 android:text="Write overview here."
-                android:textAlignment="textStart"
                 android:textColor="@android:color/black"
+                android:layout_gravity="center_horizontal|center"
+                android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView" />

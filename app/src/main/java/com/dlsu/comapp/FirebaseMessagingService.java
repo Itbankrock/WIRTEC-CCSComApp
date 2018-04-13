@@ -44,7 +44,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(messagelong))
-                .setPriority(NotificationCompat.PRIORITY_MAX);
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setAutoCancel(true);
 
         if(notificationType.equals("comment")){
             Intent intent = new Intent(this,HomeActivity.class);
@@ -57,7 +58,14 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
             //broadcaster.sendBroadcast(intent);
         }
+        else if(notificationType.equals("reply")){
+            Intent intent = new Intent(this,HomeActivity.class);
+            intent.putExtra("assocID", msg.getData().get("assocID"));
+            intent.putExtra("notifType",notificationType);
 
+            PendingIntent pendIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.setContentIntent(pendIntent);
+        }
 
 
         int mNotificationId = (int) System.currentTimeMillis();

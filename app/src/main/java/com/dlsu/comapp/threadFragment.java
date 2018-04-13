@@ -52,6 +52,7 @@ public class threadFragment extends Fragment implements SwipeRefreshLayout.OnRef
         View view = inflater.inflate(R.layout.fragment_thread, container, false);
 
         final ForumThread thethread = getArguments().getParcelable("targetObject");
+        getActivity().setTitle(thethread.getTitle());
 
         id = thethread.getId();
         dbPosts = FirebaseDatabase.getInstance().getReference("threads/" + id + "/replies");

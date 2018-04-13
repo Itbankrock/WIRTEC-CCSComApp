@@ -2,14 +2,12 @@ package com.dlsu.comapp;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,7 +76,7 @@ public class AdminAddProfFragment extends Fragment {
         final NavigationView navigationView = ((HomeActivity)getActivity()).getNavigationView();
         navigationView.getMenu().getItem(7).setChecked(true);
 
-        String[] pos = {"Lecturer", "Assistant Professor", "Full Professor"};
+        String[] pos = {"Lecturer", "Assistant Prof. Lecturer", "Assistant Professor", "Full Professor", "Associate Professor", "Teaching Associate"};
         posSpinner = view.findViewById(R.id.add_prof_position_spinner);
 
         posSpinnerAdapter = new ArrayAdapter<>(getActivity().getApplicationContext(),
@@ -112,7 +110,7 @@ public class AdminAddProfFragment extends Fragment {
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
                                             progressDialog.dismiss();
-                                            Toast.makeText(getActivity(),"Professor data uploaded!",Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(),"Professor added!",Toast.LENGTH_SHORT).show();
                                             name.setText("");
                                             email.setText("");
                                             deptSpinner.setSelection(0);
@@ -159,8 +157,6 @@ public class AdminAddProfFragment extends Fragment {
                 addpic.setColorFilter(null);
                 addpic.setImageURI(imageUri);
             }
-
-
         }
         if (resultCode == Activity.RESULT_CANCELED) {
             //Write your code if there's no result

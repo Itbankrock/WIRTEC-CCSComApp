@@ -1,7 +1,5 @@
 package com.dlsu.comapp;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -21,7 +19,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -65,7 +62,7 @@ public class ReviewsFragment extends Fragment {
     }
 
     public void setReviewList() {
-        reviewList.clear();
+        adapter.clearItems();
         progressbar.setVisibility(View.VISIBLE);
         DatabaseReference dbRevs = FirebaseDatabase.getInstance().getReference("prof_reviews");
 
@@ -74,11 +71,9 @@ public class ReviewsFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot object: dataSnapshot.getChildren()){
                     if(object.child("reviewProfID").getValue().toString().equals(prof.getId())){
-                        reviewList.add(object.getValue(Review.class));
+                        adapter.addItem(object.getValue(Review.class));
                     }
                 }
-                Collections.reverse(reviewList);
-                adapter.notifyDataSetChanged();
                 progressbar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
             }

@@ -1,7 +1,5 @@
 package com.dlsu.comapp;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -22,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -64,7 +63,7 @@ public class NotificationFragment extends Fragment {
 
     public void setNotifList() {
         DatabaseReference dbUserNotifs = FirebaseDatabase.getInstance().getReference("users/" + fbCurrUser.getUid() + "/notifications");
-        dbUserNotifs.addListenerForSingleValueEvent(new ValueEventListener() {
+        dbUserNotifs.limitToLast(50).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot object: dataSnapshot.getChildren()){
@@ -75,6 +74,7 @@ public class NotificationFragment extends Fragment {
                         notifList.add(new Notification(object.child("message").getValue().toString(), "reply"));
                     }
                 }
+                Collections.reverse(notifList);
                 adapter.notifyDataSetChanged();
             }
 

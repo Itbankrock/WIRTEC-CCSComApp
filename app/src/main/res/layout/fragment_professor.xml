@@ -53,7 +53,7 @@
                     android:layout_height="100dp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:src="@drawable/delgallego"
+                    android:src="@drawable/ic_launcher_background"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -90,7 +90,7 @@
                     android:layout_marginTop="8dp"
                     android:fontFamily="sans-serif-condensed"
                     android:singleLine="true"
-                    android:text="professor@dlsu.edu.ph"
+                    android:text="E-mail"
                     android:textAlignment="textStart" />
 
                 <TextView
@@ -99,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:fontFamily="sans-serif-condensed"
-                    android:text="Assistant Professor"
+                    android:text="Position"
                     android:textAlignment="textStart" />
 
                 <TextView
@@ -108,7 +108,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:fontFamily="sans-serif-condensed"
-                    android:text="IT Department"
+                    android:text="Department"
                     android:textAlignment="textStart" />
 
             </LinearLayout>
@@ -233,7 +233,7 @@
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="bottom"
-                android:text="5.0"
+                android:text="0.0"
                 android:textColor="@android:color/black"
                 android:textSize="30sp" />
         </android.support.constraint.ConstraintLayout>

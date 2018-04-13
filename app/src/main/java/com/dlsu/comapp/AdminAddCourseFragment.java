@@ -1,6 +1,5 @@
 package com.dlsu.comapp;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -83,7 +82,7 @@ public class AdminAddCourseFragment extends Fragment {
             }
         });
 
-        String[] units = {"0.0", "1.0", "2.0", "3.0"};
+        String[] units = {"0.0", "0.5", "1.0", "2.0", "3.0"};
         unitsSpinner = view.findViewById(R.id.add_course_units);
 
         unitsSpinnerAdapter = new ArrayAdapter<>(getActivity().getApplicationContext(),

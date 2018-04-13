@@ -175,7 +175,6 @@ public class CourseFragment extends Fragment {
                     public boolean onQueryTextChange(String query) {
                         // filter recycler view when text is changed
                         nAdapter.getFilter().filter(query);
-                        Log.e("HEY QUERY","VSAUCE HERE");
                         return false;
                     }
                 });
@@ -233,10 +232,9 @@ public class CourseFragment extends Fragment {
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 
-    public void viewNote(int position) {
+    public void viewNote(Note thenote) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("note", noteList.get(position));
-        bundle.putInt("position", position);
+        bundle.putParcelable("note", thenote);
         NoteFragment note = new NoteFragment();
         note.setArguments(bundle);
         fragmentManager = getActivity().getSupportFragmentManager();

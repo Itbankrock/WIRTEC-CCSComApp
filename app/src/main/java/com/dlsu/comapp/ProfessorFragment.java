@@ -12,12 +12,10 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -28,19 +26,15 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +53,7 @@ public class ProfessorFragment extends Fragment {
     private DatabaseReference dbProfRev = FirebaseDatabase.getInstance().getReference("prof_reviews");
     private DatabaseReference dbUserActivity = FirebaseDatabase.getInstance().getReference("users");
     private DatabaseReference dbProfCourses = FirebaseDatabase.getInstance().getReference("courses");
+    DatabaseReference dbProfMidRevs;
     private CourseSpinnerAdapter courseAdapter;
     private ArrayList<Course> courselist = new ArrayList<>();
     private Professor prof;
@@ -73,10 +68,10 @@ public class ProfessorFragment extends Fragment {
     private TextView profRating;
     private RatingBar curRating;
     private ImageView profpic;
+    private String timestamp;
 
     private long totalrevcount;
     float total;
-
     //variables for checking if user has reviewed selected course for prof
     private String idpewds;
     private boolean isReviewed = false;
@@ -100,6 +95,7 @@ public class ProfessorFragment extends Fragment {
 
         prof = getArguments().getParcelable("prof");
         theuser = getArguments().getParcelable("theUser");
+        dbProfMidRevs = FirebaseDatabase.getInstance().getReference("professors/" + prof.getId() + "/prof_reviews");
         //Course(String id, String code, String desc, String units, String overview)
         courselist.add(new Course("Choose a course...","EYY","0.0","0.0"));
 
@@ -109,6 +105,7 @@ public class ProfessorFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 courselist.clear();
                 courselist.add(new Course("Choose a course...","EYY","0.0","0.0"));
+                courselist.add(new Course("General","For General reviews.","0.0","0.0"));
                 for(DataSnapshot object: dataSnapshot.getChildren()){
                     dbProfCourses.child(object.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -134,7 +131,6 @@ public class ProfessorFragment extends Fragment {
                                 for( final DataSnapshot object: dataSnapshot.getChildren()){
                                     String coursecheck = object.child("course").getValue().toString();
                                     String profcheck = object.child("prof").getValue().toString();
-                                    Log.e("HMMM CHECKER","coursecheck: " + coursecheck + " profcheck: " + profcheck);
                                     if( coursecheck.equals(courseID) && profcheck.equals(prof.getId()) ){
                                         dbProf.child(object.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
@@ -235,7 +231,7 @@ public class ProfessorFragment extends Fragment {
             public void onClick(View view1) {
                 if(coursesSpinner.getSelectedItemPosition() != 0 && TextUtils.isEmpty(reviewtv.getText().toString()) == false ){
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmm");
-                    String timestamp = dateFormat.format(new Date());
+                    timestamp = dateFormat.format(new Date());
                     dbProf = FirebaseDatabase.getInstance().getReference("prof_reviews");
                     final DatabaseReference dbProfEy = FirebaseDatabase.getInstance().getReference("professors/" + prof.getId() + "/prof_reviews");
 
@@ -256,11 +252,13 @@ public class ProfessorFragment extends Fragment {
                                 dbUserActivity.child(theuser.getGoogleuid()).child("prof_reviews").child(idpewds).child("course").setValue(courseID);
                                 dbUserActivity.child(theuser.getGoogleuid()).child("prof_reviews").child(idpewds).child("prof").setValue(prof.getId());
                                 dbProfEy.child(idpewds).setValue(true);
-                                dbProf.child(idpewds).child("likerscount").setValue(0);
+                                dbProfEy.child(idpewds).child("likerscount").setValue(0);
 
                                 DatabaseReference eyeyeeyey = FirebaseDatabase.getInstance().getReference("users/" + theuser.getGoogleuid() + "/activities");
                                 String actKey = eyeyeeyey.push().getKey();
-                                eyeyeeyey.child(actKey).setValue(theuser.getName().split(" ")[0] + " reviewed a prof: " + prof.getName());
+                                SimpleDateFormat dateFormat2 = new SimpleDateFormat("MMMM dd, yyyy h:mm a");
+                                timestamp = dateFormat2.format(new Date());
+                                eyeyeeyey.child(actKey).setValue(timestamp + " - " + theuser.getName().split(" ")[0] + " reviewed a prof: " + prof.getName());
                             }
                         });
                     }
@@ -292,24 +290,34 @@ public class ProfessorFragment extends Fragment {
     }
 
     public void setReviewList() {
-        reviewList.clear();
+        rRdapter.clearItems();
         readAll.setVisibility(View.INVISIBLE);
         progressbar.setVisibility(View.VISIBLE);
-        DatabaseReference dbRevs = FirebaseDatabase.getInstance().getReference("prof_reviews");
+        final DatabaseReference dbRevs = FirebaseDatabase.getInstance().getReference("prof_reviews");
 
-        dbRevs.orderByChild("likerscount").limitToLast(3).addListenerForSingleValueEvent(new ValueEventListener() {
+        dbProfMidRevs.orderByChild("likerscount").limitToLast(3).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot object: dataSnapshot.getChildren()){
-                    if(object.child("reviewProfID").getValue().toString().equals(prof.getId())){
-                        reviewList.add(object.getValue(Review.class));
-                    }
+            public void onDataChange(final DataSnapshot dataSnapshot) {
+                for (final DataSnapshot object: dataSnapshot.getChildren()){
+                    dbRevs.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot flak) {
+                            rRdapter.addItem(flak.child(object.getKey()).getValue(Review.class));
+                        }
+                        @Override public void onCancelled(DatabaseError databaseError) { }});
+
                 }
-                Collections.reverse(reviewList);
-                rRdapter.notifyDataSetChanged();
-                progressbar.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
-                readAll.setVisibility(View.VISIBLE);
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                    rRdapter.reverseItems();
+                    progressbar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    readAll.setVisibility(View.VISIBLE);
+                    }
+                }, 500);
+
             }
 
             @Override
@@ -322,30 +330,30 @@ public class ProfessorFragment extends Fragment {
     public void updateProfRating(){
         totalrevcount = 0;
         total = 0.0f;
-        DatabaseReference pota = FirebaseDatabase.getInstance().getReference("professors");
-        pota.child(prof.getId()).child("prof_reviews").addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference pota = FirebaseDatabase.getInstance().getReference("professors/" + prof.getId() + "/prof_reviews");
+        pota.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot object: dataSnapshot.getChildren()){
+                for(DataSnapshot object: dataSnapshot.getChildren() ){
                     dbProfRev.child(object.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             total += dataSnapshot.child("reviewRating").getValue(Float.class);
                             totalrevcount++;
-                            Log.e("Check","total is: " + total + " totalcount: " + totalrevcount);
                         }
                         @Override public void onCancelled(DatabaseError databaseError) {}});
                 }
+
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        profRating.setText(String.format("%.1f", total / totalrevcount));
-                        curRating.setRating(total / totalrevcount);
+                        if(total != 0.0f && totalrevcount != 0){
+                            profRating.setText(String.format("%.1f", total / totalrevcount));
+                            curRating.setRating(total / totalrevcount);
+                        }
                     }
                 }, 1000);
-
-
 
             }
 

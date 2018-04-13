@@ -3,8 +3,6 @@ package com.dlsu.comapp;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,7 +12,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,7 +116,6 @@ public class CourseProfFragment extends Fragment {
             recyclerView.setAdapter(pAdapter);
 
             prepareProfData();
-
         }
 
         return view;
@@ -134,10 +130,17 @@ public class CourseProfFragment extends Fragment {
                 boolean checker = false;
                 for(DataSnapshot object: dataSnapshot.getChildren()){
                     Course thiscourse= object.getValue(Course.class);
-                    courselist.add( thiscourse );
+                    if(!thiscourse.getId().equals("General")){
+                        courselist.add( thiscourse );
+                    }
                     checker = true;
                 }
                 if(checker){
+                    Collections.sort(courselist, new Comparator<Course>() {
+                        public int compare(Course a, Course b) {
+                            return a.getId().compareTo(b.getId());
+                        }
+                    });
                     cAdapter.notifyDataSetChanged();
                     progresselements.setVisibility(View.GONE);
                     searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -156,18 +159,14 @@ public class CourseProfFragment extends Fragment {
                         }
                     });
                 }
+                else{
+                    progresselements.setVisibility(View.GONE);
+                }
 
 
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {}
-        });
-
-
-        Collections.sort(courselist, new Comparator<Course>() {
-            public int compare(Course a, Course b) {
-                return a.getId().compareTo(b.getId());
-            }
         });
     }
 
@@ -184,6 +183,11 @@ public class CourseProfFragment extends Fragment {
                     checker = true;
                 }
                 if(checker){
+                    Collections.sort(proflist, new Comparator<Professor>() {
+                        public int compare(Professor a, Professor b) {
+                            return a.getName().compareTo(b.getName());
+                        }
+                    });
                     pAdapter.notifyDataSetChanged();
                     progresselements.setVisibility(View.GONE);
                     searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -202,17 +206,14 @@ public class CourseProfFragment extends Fragment {
                         }
                     });
                 }
+                else{
+                    progresselements.setVisibility(View.GONE);
+                }
 
 
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {}
-        });
-
-        Collections.sort(proflist, new Comparator<Professor>() {
-            public int compare(Professor a, Professor b) {
-                return a.getName().compareTo(b.getName());
-            }
         });
     }
 
@@ -221,7 +222,7 @@ public class CourseProfFragment extends Fragment {
         return profCourseList;
     }
 
-    public ArrayList<Professor> getProfs(int position) {
+    public ArrayList<Professor> getProfs() {
         ArrayList<Professor> courseProfList = new ArrayList<>();
 
         return courseProfList;
@@ -237,10 +238,10 @@ public class CourseProfFragment extends Fragment {
         fragmentManager.beginTransaction().replace(R.id.main_fragment, prof).addToBackStack(null).commit();
     }
 
-    public void viewCourse(int position) {
+    public void viewCourse(Course thecourse) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("course", courselist.get(position));
-        bundle.putParcelableArrayList("profs", getProfs(position));
+        bundle.putParcelable("course", thecourse);
+        bundle.putParcelableArrayList("profs", getProfs());
 
         CourseFragment course = new CourseFragment();
         course.setArguments(bundle);

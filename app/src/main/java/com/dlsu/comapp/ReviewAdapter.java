@@ -1,18 +1,14 @@
 package com.dlsu.comapp;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,6 +19,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +89,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MyViewHold
         dbCourses.child(review.getReviewCourseID()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                holder.reviewCourse.setText( dataSnapshot.child("code").getValue().toString() );
+                holder.reviewCourse.setText( dataSnapshot.child("id").getValue().toString() );
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -100,12 +99,13 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MyViewHold
         holder.reviewContent.setText(review.getReviewContent());
         holder.reviewRating.setRating(review.getReviewRating());
 
-        final DatabaseReference dbPost = FirebaseDatabase.getInstance().getReference("prof_reviews/" + review.getReviewID());
+        final DatabaseReference dbPost = FirebaseDatabase.getInstance().getReference("professors/" + review.getReviewProfID() + "/prof_reviews/" +  review.getReviewID());
 
         dbPost.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 final long i = dataSnapshot.child("likers").getChildrenCount();
+
                 holder.numlikes.setText( ns.format( (long) dataSnapshot.child("likerscount").getValue() ) + "" );
                 //Check if the user has already liked this post
                 if(dataSnapshot.child("likers").hasChild(fbCurrUser.getUid())){
@@ -135,17 +135,20 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MyViewHold
                                 if(review.getReviewContent().length() >= 20){
                                     thecontent = thecontent.substring(0,19) + "...";
                                 }
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy h:mm a");
+                                String timestamp = dateFormat.format(new Date());
                                 String notifKey = dbtest3.child("notifications").push().getKey();
                                 Map<String, Object> childUpdates = new HashMap<>();
                                 childUpdates.put("from", fbCurrUser.getUid());
                                 childUpdates.put("message", fbCurrUser.getDisplayName().split(" ")[0] + " liked your prof review");
                                 childUpdates.put("messagelong", thecontent);
                                 childUpdates.put("notificationType", "like");
+                                childUpdates.put("associatedID", review.getReviewID());
                                 dbtest3.child("notifications").child(notifKey).setValue(childUpdates);
 
                                 DatabaseReference dbUserActs = FirebaseDatabase.getInstance().getReference("users/" + fbCurrUser.getUid() + "/activities");
                                 String actKey = dbUserActs.push().getKey();
-                                dbUserActs.child(actKey).setValue(fbCurrUser.getDisplayName().split(" ")[0] + " liked a prof review.");
+                                dbUserActs.child(actKey).setValue(timestamp + " - " + fbCurrUser.getDisplayName().split(" ")[0] + " liked a prof review.");
                             }
 
                         }
@@ -168,5 +171,20 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MyViewHold
     @Override
     public int getItemCount() {
         return reviewList.size();
+    }
+
+    public void addItem(Review object){
+        reviewList.add(object);
+        notifyDataSetChanged();
+    }
+
+    public void clearItems(){
+        reviewList.clear();
+        notifyDataSetChanged();
+    }
+
+    public void reverseItems(){
+        Collections.reverse(reviewList);
+        notifyDataSetChanged();
     }
 }

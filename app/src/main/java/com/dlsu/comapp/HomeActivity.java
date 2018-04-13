@@ -27,6 +27,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -54,6 +56,7 @@ public class HomeActivity extends AppCompatActivity
     private User theuser;
     private Toolbar toolbar;
     private threadFragment thread;
+    private FullReviewFragment fullReview;
     private ProgressDialog progressDialog;
 
     FirebaseAuth mAuth;
@@ -98,6 +101,7 @@ public class HomeActivity extends AppCompatActivity
         dbUsers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                    //User already exists
                     if( dataSnapshot.hasChild(fbCurrUser.getUid()) ) {
                         theuser = dataSnapshot.child(fbCurrUser.getUid()).getValue(User.class);
                         dbUsers.removeEventListener(this);
@@ -107,7 +111,6 @@ public class HomeActivity extends AppCompatActivity
                     else{
                         theuser = new User(fbCurrUser.getUid(),fbCurrUser.getDisplayName(),fbCurrUser.getEmail(),fbCurrUser.getPhotoUrl().toString(),"", "", "");
                         dbUsers.child(fbCurrUser.getUid()).setValue(theuser);
-                        Log.e("Users DB","New user pushed to db.");
                         dbUsers.removeEventListener(this);
                         updateUserSession();
                     }
@@ -136,9 +139,11 @@ public class HomeActivity extends AppCompatActivity
                         dbThread.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
+                                progressDialog.cancel();
                                 viewThread(dataSnapshot.getValue(ForumThread.class));
                             }
-                            @Override public void onCancelled(DatabaseError databaseError) {}});
+                            @Override public void onCancelled(DatabaseError databaseError) {progressDialog.cancel();}});
+
                     }
 
                 }
@@ -355,8 +360,15 @@ public class HomeActivity extends AppCompatActivity
         }
 
         else if (id == R.id.nav_logout) {
-            mAuth.signOut();
-
+            DatabaseReference dblogout = FirebaseDatabase.getInstance().getReference("users").child(theuser.getGoogleuid());
+            Map<String, Object> childUpdates = new HashMap<>();
+            childUpdates.put("/token_id/", "logged out");
+            dblogout.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    mAuth.signOut();
+                }
+            });
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -390,10 +402,10 @@ public class HomeActivity extends AppCompatActivity
         fragmentManager.beginTransaction().replace(R.id.main_fragment, prof).addToBackStack(null).commit();
     }
 
-    public void viewCourse(int position) {
+    public void viewCourse(Course thecourse) {
         fragmentManager = getSupportFragmentManager();
         CourseProfFragment fragment = (CourseProfFragment)fragmentManager.findFragmentById(R.id.main_fragment);
-        fragment.viewCourse(position);
+        fragment.viewCourse(thecourse);
     }
 
     public void viewThread(ForumThread object){
@@ -405,22 +417,22 @@ public class HomeActivity extends AppCompatActivity
         thread.setArguments(bundle);
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.main_fragment, thread).addToBackStack(null).commit();
-        setTitle(object.getTitle());
+        //setTitle(object.getTitle());
     }
 
 
 
-    public void viewNote(int position) {
+    public void viewNote(Note thenote) {
         fragmentManager = getSupportFragmentManager();
         CourseFragment fragment = (CourseFragment)fragmentManager.findFragmentById(R.id.main_fragment);
-        fragment.viewNote(position);
+        fragment.viewNote(thenote);
     }
 
     public void viewFullReview(String reviewID, String reviewMakerID) {
         Bundle bundle = new Bundle();
         bundle.putString("reviewID", reviewID);
         bundle.putString("makerID",reviewMakerID);
-        FullReviewFragment fullReview = new FullReviewFragment();
+        fullReview = new FullReviewFragment();
         fullReview.setArguments(bundle);
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.main_fragment, fullReview).addToBackStack(null).commit();
@@ -451,6 +463,10 @@ public class HomeActivity extends AppCompatActivity
 
         if (requestCode == NEW_THREAD_CODE) {
             if(resultCode == Activity.RESULT_OK){
+                progressDialog.setMessage("Creating thread..."); // Setting Message
+                progressDialog.setTitle("New thread"); // Setting Title
+                progressDialog.setCancelable(false);
+                progressDialog.show();
                 final String newtitle = data.getStringExtra("newthreadtitle");
                 String newcontent = data.getStringExtra("newthreadcontent");
 
@@ -467,7 +483,7 @@ public class HomeActivity extends AppCompatActivity
 
                 DatabaseReference dbUserActs = FirebaseDatabase.getInstance().getReference("users/" + fbCurrUser.getUid() + "/activities");
                 String actKey = dbUserActs.push().getKey();
-                dbUserActs.child(actKey).setValue(fbCurrUser.getDisplayName().split(" ")[0] + " created a new thread in the forums.");
+                dbUserActs.child(actKey).setValue(timestamp + " - " + fbCurrUser.getDisplayName().split(" ")[0] + " created a new thread in the forums.");
 
                 String idfirstpost = dbtest.child(idthread).child("replies").push().getKey();
                 ThreadPost post = new ThreadPost(idfirstpost,theuser.getGoogleuid(),idthread,newcontent,timestamp,timestamp,true);
@@ -477,6 +493,7 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                         viewThread(newThread);
+                        progressDialog.cancel();
                     }
                 });
 
@@ -488,6 +505,10 @@ public class HomeActivity extends AppCompatActivity
 
         else if(requestCode == NEW_REPLY_CODE){
             if(resultCode == Activity.RESULT_OK){
+                progressDialog.setMessage("Submitting reply..."); // Setting Message
+                progressDialog.setTitle("New reply"); // Setting Title
+                progressDialog.setCancelable(false);
+                progressDialog.show();
                 String newreply = data.getStringExtra("newreplycontent");
                 String threadid = data.getStringExtra("threadrepid");
                 ForumThread thethread = data.getParcelableExtra("threaditself");
@@ -502,7 +523,15 @@ public class HomeActivity extends AppCompatActivity
                 final String idreply = dbtest2.push().getKey();
                 dbtest.child(idreply).setValue(true);
                 ThreadPost post = new ThreadPost(idreply,theuser.getGoogleuid(),threadid,newreply,timestamp, timestamp, true);
-                dbtest2.child(idreply).setValue(post);
+                dbtest2.child(idreply).setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        thread.preparePosts();
+                        progressDialog.cancel();
+                        Toast.makeText(getApplicationContext(),"Your reply has been added.",Toast.LENGTH_SHORT).show();
+
+                    }
+                });
 				
 				if(!fbCurrUser.getUid().equals(thethread.getUserID())){
                 String notifKey = dbtest3.child("notifications").push().getKey();
@@ -516,7 +545,7 @@ public class HomeActivity extends AppCompatActivity
 
                 DatabaseReference dbUserActs = FirebaseDatabase.getInstance().getReference("users/" + fbCurrUser.getUid() + "/activities");
                 String actKey = dbUserActs.push().getKey();
-                dbUserActs.child(actKey).setValue(fbCurrUser.getDisplayName().split(" ")[0] + " replied to a thread: " + thethread.getTitle());
+                dbUserActs.child(actKey).setValue(timestamp + " - " + fbCurrUser.getDisplayName().split(" ")[0] + " replied to a thread: " + thethread.getTitle());
                 }
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -526,6 +555,10 @@ public class HomeActivity extends AppCompatActivity
 
         else if(requestCode == EDIT_REPLY_CODE){
             if(resultCode == Activity.RESULT_OK){
+                progressDialog.setMessage("Saving changes..."); // Setting Message
+                progressDialog.setTitle("Edit reply"); // Setting Title
+                progressDialog.setCancelable(false);
+                progressDialog.show();
                 String newreply = data.getStringExtra("newreplycontent");
                 String replyID = data.getStringExtra("replyID");
 
@@ -537,7 +570,13 @@ public class HomeActivity extends AppCompatActivity
                 Map<String, Object> childUpdates = new HashMap<>();
                 childUpdates.put("/content/", newreply);
                 childUpdates.put("/lastupdated/", timestamp);
-                dbtest2.updateChildren(childUpdates);
+                dbtest2.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        progressDialog.cancel();
+                        Toast.makeText(getApplicationContext(),"Changes saved.",Toast.LENGTH_SHORT).show();
+                    }
+                });
                 thread.preparePosts();
 
             }
@@ -548,8 +587,12 @@ public class HomeActivity extends AppCompatActivity
 
         else if(requestCode == EDIT_COMMENT_CODE){
             if(resultCode == Activity.RESULT_OK){
+                progressDialog.setMessage("Saving changes..."); // Setting Message
+                progressDialog.setTitle("Edit comment"); // Setting Title
+                progressDialog.setCancelable(false);
+                progressDialog.show();
                 String newcomment = data.getStringExtra("newcommentcontent");
-                String reviewID = data.getStringExtra("reviewID");
+                String reviewID = data.getStringExtra("commentID");
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy h:mm a");
                 String timestamp = dateFormat.format(new Date());
@@ -560,9 +603,14 @@ public class HomeActivity extends AppCompatActivity
                 childUpdates.put("/content/", newcomment);
                 childUpdates.put("/lastupdated/", timestamp);
 
-                dbtest2.updateChildren(childUpdates);
-                thread.preparePosts();
-
+                dbtest2.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        progressDialog.cancel();
+                        Toast.makeText(getApplicationContext(),"Changes saved.",Toast.LENGTH_SHORT).show();
+                    }
+                });
+                fullReview.setReviewCommentList();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result

@@ -130,7 +130,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:fontFamily="sans-serif-condensed"
-                android:text="The user can view their account by swiping or clicking the toolbar found on the top left of the screen and selecting “Courses”. They can also access this from a button found in the home page. \n\nThe user is shown a list of courses of which they can select from in order to view more information about the course. \n\nThe user can also create, view, or edit notes on the screen by pressing either pressing the “Add Notes” button to create new notes or by selecting a previously created note that can be viewed and edited. " />
+                android:text="The user can view their account by swiping or clicking the toolbar found on the top left of the screen and selecting “Courses”. They can also access this from a button found in the home page. \n\nThe user is shown a list of courses of which they can select from in order to view more information about the course. \n\nThe user can also create, view, search or edit notes on the screen by pressing either pressing the “Add Notes” button to create new notes or by selecting a previously created note that can be viewed and edited. " />
         </LinearLayout>
 
         <LinearLayout
@@ -223,7 +223,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif-condensed"
-                android:text="TUTOTRIAL"
+                android:text="TUTORIAL"
                 android:textAlignment="viewStart"
                 android:textColor="@android:color/black"
                 android:textStyle="bold" />

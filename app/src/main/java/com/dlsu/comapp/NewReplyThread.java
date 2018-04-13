@@ -77,6 +77,33 @@ public class NewReplyThread extends AppCompatActivity {
                 }
             });
         }
+        else if(receiveaction.equals("editrevcomment")){
+            setTitle("Edit Comment");
+            final String commentID = i.getStringExtra("commentID");
+            String existingContent = i.getStringExtra("existingcontent");
+
+            newReply = (EditText)findViewById(R.id.newReply_content);
+            newReply.setText(existingContent);
+
+            actionBarToolBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    boolean toReturn = false;
+                    int id = item.getItemId();
+
+                    //noinspection SimplifiableIfStatement
+                    if (id == R.id.newThread_action_submit) {
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("newcommentcontent",newReply.getText().toString());
+                        returnIntent.putExtra("commentID",commentID);
+                        setResult(Activity.RESULT_OK, returnIntent);
+                        finish();
+                        toReturn = true;
+                    }
+                    return toReturn;
+                }
+            });
+        }
 
     }
 }

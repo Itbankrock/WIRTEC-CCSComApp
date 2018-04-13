@@ -1,18 +1,13 @@
 package com.dlsu.comapp;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +64,7 @@ public class FullReviewFragment extends Fragment {
         navigationView.getMenu().getItem(2).setChecked(true);
 
         recyclerView = view.findViewById(R.id.full_review_view);
-        adapter = new ReviewCommentAdapter(reviewCommentList, ((HomeActivity)getActivity()));
+        adapter = new ReviewCommentAdapter(reviewCommentList, ((HomeActivity)getActivity()), this);
         RecyclerView.LayoutManager nLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(nLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -127,7 +122,8 @@ public class FullReviewFragment extends Fragment {
                      dbrevcomments.child(object.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                          @Override
                          public void onDataChange(DataSnapshot dataSnapshot) {
-                             adapter.addItem(dataSnapshot.getValue(ReviewComment.class));
+                             if(dataSnapshot.child("active").getValue(Boolean.class))
+                                adapter.addItem(dataSnapshot.getValue(ReviewComment.class));
                          }
                          @Override
                          public void onCancelled(DatabaseError databaseError) {}});
