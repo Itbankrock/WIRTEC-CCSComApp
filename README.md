@@ -1,8 +1,5 @@
 # WIRTEC-CCSComApp
 
-Promo video:
-<iframe width="560" height="315" src="https://www.youtube.com/embed/-nXhYQQxxmM" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-
 Short description:
 
 CSS ComApp is an application that was developed for the use of students in the College of Computer Studies in DLSU Taft, Manila. This application focuses on allowing such students to have a tool that they can utilize for information with regards to their classes and its accompanying professors, along with forums and frequently asked questions to address any issues that the students would have with regards to their college life. As such, the four main functionalities of this application are Courses, Professors, Forum, and DLSU FAQ. 
